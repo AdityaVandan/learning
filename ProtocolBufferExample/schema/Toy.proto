@@ -1,0 +1,17 @@
+edition = "2023";
+
+package toy;
+
+message Toy {
+    string name = 1;
+    string description = 2;
+    int32 price = 3;
+    Company company = 4;
+    repeated int32 dimensions = 5;
+}
+
+message Company {
+    string name = 1;
+    string address = 2;
+}
+
