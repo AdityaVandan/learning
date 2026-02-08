@@ -1,17 +1,35 @@
-edition = "2023";
-
+syntax = "proto3";
 package toy;
 
+service ToyService {
+  rpc GetToy(GetToyRequest) returns (GetToyResponse);
+  rpc GetToyProtobuf(GetToyRequest) returns (GetToyProtobufResponse);
+  rpc GetToyProtobufBase64(GetToyRequest) returns (GetToyProtobufBase64Response);
+}
+
 message Toy {
-    string name = 1;
-    string description = 2;
-    int32 price = 3;
-    Company company = 4;
-    repeated int32 dimensions = 5;
+  string name = 1;
+  string description = 2;
+  int32 price = 3;
+  Company company = 4;
+  repeated int32 dimensions = 5;
 }
 
 message Company {
-    string name = 1;
-    string address = 2;
+  string name = 1;
+  string address = 2;
 }
 
+message GetToyRequest {}
+
+message GetToyResponse {
+  Toy toy = 1;
+}
+
+message GetToyProtobufResponse {
+  bytes toy_data = 1;
+}
+
+message GetToyProtobufBase64Response {
+  string toy_protobuf_base64 = 1;
+}
