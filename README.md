@@ -12,6 +12,8 @@ Contains exhaustively all the new concepts I learn daily
 - index db
 - how things are set in CDNs
 - sticky sessions in load balancers
+- react 19 new apis 
+- e-tags
 
 ## Done
 - Protocol Buffers
