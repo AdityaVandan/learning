@@ -14,7 +14,10 @@ Contains exhaustively all the new concepts I learn daily
 - sticky sessions in load balancers
 - react 19 new apis 
 - e-tags
+- redis
+- kafka
+- claude code
 
 ## Done
-- Protocol Buffers
-- compression strategies
+- Protocol Buffers - concepts/ProtocolBufferExample
+- compression strategies - concepts/webaApiCompression
