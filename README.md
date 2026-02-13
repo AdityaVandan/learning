@@ -21,3 +21,19 @@ Contains exhaustively all the new concepts I learn daily
 ## Done
 - Protocol Buffers - concepts/ProtocolBufferExample
 - compression strategies - concepts/webaApiCompression
+
+###### AI Code suggestions are stopped for the repo in VSCode:
+To undo them, update settings.json and remove the following:
+```
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    },
+    "editor.wordBasedSuggestions": false,
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.inlineSuggest.enabled": false,
+    "editor.parameterHints.enabled": false,
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.snippetSuggestions": "none"
+```
