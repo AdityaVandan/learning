@@ -23,6 +23,111 @@ Invalidation demos:
 - `request_coalescing()` - collapse concurrent cache misses into one DB call
 - `two_level_cache()` - L1 in-memory + L2 shared/distributed cache
 
+## Diagrams: Caching Strategies
+
+### 1) Cache Aside
+```mermaid
+flowchart LR
+    A[App] --> C{Cache hit?}
+    C -->|Yes| R[Return from Cache]
+    C -->|No| D[Read DB]
+    D --> W[Write Cache]
+    W --> R
+```
+
+### 2) Read Through
+```mermaid
+flowchart LR
+    A[App] --> C[Cache Layer]
+    C --> H{Hit?}
+    H -->|Yes| R[Return value]
+    H -->|No| D[Cache fetches DB]
+    D --> U[Cache stores value]
+    U --> R
+```
+
+### 3) Write Through
+```mermaid
+flowchart LR
+    A[App write] --> C[Cache Layer]
+    C --> D[Write DB]
+    D --> W[Write Cache]
+    W --> OK[Ack]
+```
+
+### 4) Write Back
+```mermaid
+flowchart LR
+    A[App write] --> C[Write Cache]
+    C --> Q[Queue / Dirty flag]
+    C --> OK[Fast Ack]
+    Q --> F[Async flush]
+    F --> D[Write DB later]
+```
+
+### 5) Write Around
+```mermaid
+flowchart LR
+    A[App write] --> D[Write DB only]
+    D --> X[Invalidate/Delete cache key]
+    X --> N[Next read refills cache]
+```
+
+### 6) Refresh Ahead
+```mermaid
+flowchart LR
+    T[Background timer] --> K{TTL near expiry?}
+    K -->|Yes| D[Fetch fresh value from DB]
+    D --> C[Update cache and TTL]
+    K -->|No| S[Skip]
+```
+
+### 7) TTL Expiration
+```mermaid
+flowchart LR
+    S[Set key with TTL] --> T[Time passes]
+    T --> E{TTL expired?}
+    E -->|No| H[Cache hit]
+    E -->|Yes| M[Cache miss]
+```
+
+### 8) Negative Caching
+```mermaid
+flowchart LR
+    A[Read key] --> C{In cache?}
+    C -->|NOT_FOUND marker| N[Return not found]
+    C -->|Normal value| V[Return value]
+    C -->|No| D[Read DB]
+    D --> Z{Exists in DB?}
+    Z -->|No| M[Cache NOT_FOUND with short TTL]
+    Z -->|Yes| U[Cache value]
+```
+
+### 9) Request Coalescing (SingleFlight)
+```mermaid
+flowchart LR
+    R1[Req 1 miss] --> L[Acquire per-key lock]
+    R2[Req 2 miss] --> L
+    R3[Req 3 miss] --> L
+    L --> D[One DB read]
+    D --> C[Fill cache]
+    C --> A[All waiting requests return]
+```
+
+### 10) Two-Level Cache (L1 + L2)
+```mermaid
+flowchart LR
+    A[App] --> L1{L1 hit?}
+    L1 -->|Yes| R1[Return]
+    L1 -->|No| L2{L2 hit?}
+    L2 -->|Yes| B[Backfill L1]
+    B --> R2[Return]
+    L2 -->|No| D[Read DB]
+    D --> U2[Write L2]
+    U2 --> U1[Write L1]
+    U1 --> R3[Return]
+```
+
 ## Can these strategies be used together?
 
 Yes. In most real systems, these patterns are combined along *orthogonal dimensions*:
@@ -93,7 +198,89 @@ This folder already demonstrates `ttl_expiration()`. The additional common inval
 
 See `invalidation_example.py` for minimal runnable examples of each strategy.
 
+## Diagrams: Cache Invalidation Strategies
+
+### 1) Delete on Write
+```mermaid
+flowchart LR
+    W[Write request] --> D[Update DB]
+    D --> X[Delete cache key]
+    X --> N[Next read causes refill]
+```
+
+### 2) Versioned Keys / Generation Counters
+```mermaid
+flowchart LR
+    W[Write request] --> D[Update DB + bump version]
+    R[Read request] --> K[Build cache key with version]
+    K --> C{Key exists?}
+    C -->|Yes| V[Return cached value]
+    C -->|No| F[Fetch DB and cache under new versioned key]
+```
+
+### 3) Tag/Namespace Invalidation
+```mermaid
+flowchart LR
+    A[Cache entries with tag product:123] --> T[Tag index]
+    U[Product update] --> I[Invalidate tag product:123]
+    I --> D[Delete all keys in tag]
+```
+
+### 4) Revalidate on Read (ETag/Version)
+```mermaid
+flowchart LR
+    R[Read request] --> C[Get cached value + cached_version]
+    C --> V[Fetch current DB version]
+    V --> M{Versions match?}
+    M -->|Yes| H[Return cached value]
+    M -->|No| F[Fetch fresh value]
+    F --> U[Update cache with new version]
+```
+
+### 5) Active Invalidation Across Nodes (Pub/Sub)
+```mermaid
+flowchart LR
+    N1[Node 1 write] --> D[Update DB]
+    D --> P[Publish invalidation event]
+    P --> N2[Node 2 cache deletes key]
+    P --> N3[Node 3 cache deletes key]
+```
+
 ## Why this set?
 
 "All caching strategies" can be interpreted very broadly. This set covers the
 core patterns used in most backend systems and interviews.
+
+```mermaid
+flowchart TD
+
+    %% Read Path
+    A[Request] --> B{Cache Hit?}
+    B -->|Yes| C[Fast Response]
+    B -->|No| D[Read from DB]
+    D --> E[Update Cache]
+    E --> C
+
+    %% Write Path
+    W[Write Request] --> X[Update DB]
+    X --> Y[Invalidate / Update Cache]
+
+    %% Freshness
+    subgraph Freshness
+        F1[TTL Expiration]
+        F2[Refresh Ahead]
+    end
+
+    %% Protection
+    subgraph Protection
+        P1[Request Coalescing]
+        P2[Negative Caching]
+    end
+
+    %% Connections
+    E --> F1
+    E --> F2
+
+    D --> P1
+    D --> P2
+```
