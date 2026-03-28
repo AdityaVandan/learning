@@ -1,6 +1,4 @@
-// package main
-
-import "fmt"
+package main
 
 var cache []uint64
 
@@ -31,11 +29,11 @@ func GetCatalanNumber(n uint64) uint64 {
 	return CalculateCatalanNumber(n)
 }
 
-func main() {
-	var n uint64 = 100
-	var i uint64
-	for i = 0; i < n; i++ {
-		result := GetCatalanNumber(i)
-		fmt.Println(i, result)
-	}
-}
+// func main() {
+// 	var n uint64 = 100
+// 	var i uint64
+// 	for i = 0; i < n; i++ {
+// 		result := GetCatalanNumber(i)
+// 		fmt.Println(i, result)
+// 	}
+// }

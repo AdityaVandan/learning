@@ -40,7 +40,7 @@ func FindLongestPalindrome(s string) string {
 // dp logic
 // TODO
 
-func main() {
-	result := FindLongestPalindrome("abcad")
-	fmt.Println(result)
-}
+// func main() {
+// 	result := FindLongestPalindrome("abbacad")
+// 	fmt.Println(result)
+// }
