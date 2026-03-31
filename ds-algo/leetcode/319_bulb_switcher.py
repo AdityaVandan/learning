@@ -1,3 +1,5 @@
+import math
+
 class Solution1: # brute force O(NlogN) O(N)
     def bulbSwitch(self, n: int) -> int:
         bulbs = [False]*n
