@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution: # O(N)
     def containsCycle(self, grid: List[List[str]]) -> bool:
         stack = []

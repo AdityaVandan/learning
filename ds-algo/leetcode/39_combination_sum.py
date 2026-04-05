@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution:
     def recursion(self, candidates, target, index, current, total, result):
         if total > target:
