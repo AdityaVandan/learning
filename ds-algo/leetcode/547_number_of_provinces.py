@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution1: # recrusion
     def __init__(self):
         self.visited = {}

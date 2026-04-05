@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution:
     def recursion(self, candidates: List[int], target: int, start: int, current_result: List[int], result: List[List[int]]):
         if target < 0: return

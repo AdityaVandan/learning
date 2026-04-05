@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution:
     def recursion(self, start: int, end: int, k: int, current: List[int], result):
         if len(current) == k:
