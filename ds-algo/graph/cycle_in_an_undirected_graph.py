@@ -1,4 +1,4 @@
-class Solution: # DFS O(V+E) #(V)
+class Solution1: # DFS O(V+E) #(V)
     def isCycle(self, V, adj):
         visited = [False] * V
 
@@ -24,7 +24,7 @@ class Solution: # DFS O(V+E) #(V)
 
 from collections import deque
 
-class Solution: # BFS O(V+E) O(V)
+class Solution2: # BFS O(V+E) O(V)
     def isCycle(self, V, adj):
         visited = [False] * V
 
