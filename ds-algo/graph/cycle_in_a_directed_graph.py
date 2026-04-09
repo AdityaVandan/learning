@@ -51,3 +51,33 @@ class Solution2:  # BFS (Kahn) O(V + E) O(V)
                     q.append(v)
 
         return seen != V
+
+
+class Solution3:  # DFS three-color (WHITE/GRAY/BLACK) O(V + E) O(V)
+    """
+    Three-color DFS:
+    - WHITE: unvisited
+    - GRAY: currently in recursion stack (active path)
+    - BLACK: fully processed
+
+    A directed cycle exists iff we see an edge to a GRAY vertex.
+    """
+
+    def isCyclic(self, V, edges):
+        WHITE, GRAY, BLACK = 0, 1, 2
+        color = [WHITE] * V
+
+        def dfs(u):
+            color[u] = GRAY
+            for v in edges[u]:
+                if color[v] == GRAY:
+                    return True
+                if color[v] == WHITE and dfs(v):
+                    return True
+            color[u] = BLACK
+            return False
+
+        for i in range(V):
+            if color[i] == WHITE and dfs(i):
+                return True
+        return False
