@@ -26,11 +26,11 @@ Each algorithm has implementations in two languages. Both versions implement the
 
 | Algorithm | TypeScript | Go |
 |---|---|---|
-| Token Bucket | [token-bucket.ts](algorithms/token-bucket.ts) | [go/token-bucket/main.go](algorithms/go/token-bucket/main.go) |
-| Leaky Bucket | [leaky-bucket.ts](algorithms/leaky-bucket.ts) | [go/leaky-bucket/main.go](algorithms/go/leaky-bucket/main.go) |
-| Fixed Window | [fixed-window.ts](algorithms/fixed-window.ts) | [go/fixed-window/main.go](algorithms/go/fixed-window/main.go) |
-| Sliding Window Log | [sliding-window-log.ts](algorithms/sliding-window-log.ts) | [go/sliding-window-log/main.go](algorithms/go/sliding-window-log/main.go) |
-| Sliding Window Counter | [sliding-window-counter.ts](algorithms/sliding-window-counter.ts) | [go/sliding-window-counter/main.go](algorithms/go/sliding-window-counter/main.go) |
+| Token Bucket | [token-bucket.ts](algorithms/typescript/token-bucket.ts) | [go/token-bucket/main.go](algorithms/go/token-bucket/main.go) |
+| Leaky Bucket | [leaky-bucket.ts](algorithms/typescript/leaky-bucket.ts) | [go/leaky-bucket/main.go](algorithms/go/leaky-bucket/main.go) |
+| Fixed Window | [fixed-window.ts](algorithms/typescript/fixed-window.ts) | [go/fixed-window/main.go](algorithms/go/fixed-window/main.go) |
+| Sliding Window Log | [sliding-window-log.ts](algorithms/typescript/sliding-window-log.ts) | [go/sliding-window-log/main.go](algorithms/go/sliding-window-log/main.go) |
+| Sliding Window Counter | [sliding-window-counter.ts](algorithms/typescript/sliding-window-counter.ts) | [go/sliding-window-counter/main.go](algorithms/go/sliding-window-counter/main.go) |
 
 ### Running the Go demos
 
@@ -121,7 +121,7 @@ Client C ───── ✓ ✗ ✗ ✗ ✗ (blocked)   ───────�
 
 ## 1. Token Bucket
 
-**TypeScript:** [algorithms/token-bucket.ts](algorithms/token-bucket.ts) | **Go:** [algorithms/go/token-bucket/main.go](algorithms/go/token-bucket/main.go)
+**TypeScript:** [algorithms/typescript/token-bucket.ts](algorithms/typescript/token-bucket.ts) | **Go:** [algorithms/go/token-bucket/main.go](algorithms/go/token-bucket/main.go)
 
 ### Concept
 
@@ -184,7 +184,7 @@ allowRequest(key):
 
 ## 2. Leaky Bucket
 
-**TypeScript:** [algorithms/leaky-bucket.ts](algorithms/leaky-bucket.ts) | **Go:** [algorithms/go/leaky-bucket/main.go](algorithms/go/leaky-bucket/main.go)
+**TypeScript:** [algorithms/typescript/leaky-bucket.ts](algorithms/typescript/leaky-bucket.ts) | **Go:** [algorithms/go/leaky-bucket/main.go](algorithms/go/leaky-bucket/main.go)
 
 ### Concept
 
@@ -250,7 +250,7 @@ Classical Queue:
 
 ## 3. Fixed Window Counter
 
-**TypeScript:** [algorithms/fixed-window.ts](algorithms/fixed-window.ts) | **Go:** [algorithms/go/fixed-window/main.go](algorithms/go/fixed-window/main.go)
+**TypeScript:** [algorithms/typescript/fixed-window.ts](algorithms/typescript/fixed-window.ts) | **Go:** [algorithms/go/fixed-window/main.go](algorithms/go/fixed-window/main.go)
 
 ### Concept
 
@@ -312,7 +312,7 @@ allowRequest(key):
 
 ## 4. Sliding Window Log
 
-**TypeScript:** [algorithms/sliding-window-log.ts](algorithms/sliding-window-log.ts) | **Go:** [algorithms/go/sliding-window-log/main.go](algorithms/go/sliding-window-log/main.go)
+**TypeScript:** [algorithms/typescript/sliding-window-log.ts](algorithms/typescript/sliding-window-log.ts) | **Go:** [algorithms/go/sliding-window-log/main.go](algorithms/go/sliding-window-log/main.go)
 
 ### Concept
 
@@ -383,7 +383,7 @@ allowRequest(key):
 
 ## 5. Sliding Window Counter (Hybrid)
 
-**TypeScript:** [algorithms/sliding-window-counter.ts](algorithms/sliding-window-counter.ts) | **Go:** [algorithms/go/sliding-window-counter/main.go](algorithms/go/sliding-window-counter/main.go)
+**TypeScript:** [algorithms/typescript/sliding-window-counter.ts](algorithms/typescript/sliding-window-counter.ts) | **Go:** [algorithms/go/sliding-window-counter/main.go](algorithms/go/sliding-window-counter/main.go)
 
 ### Concept
 
@@ -728,7 +728,7 @@ For production systems with multiple nodes, here are the standard approaches:
 
 ### Redis Implementation Sketch (Sliding Window Counter)
 
-```typescript
+```algorithms/typescript
 // Atomic Lua script — Redis executes this as a single transaction
 const SLIDING_WINDOW_SCRIPT = `
   local key = KEYS[1]
