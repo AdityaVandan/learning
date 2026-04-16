@@ -1,4 +1,5 @@
 import heapq
+from collections import deque
 from typing import List
 
 class Solution: # dijkstra heap O(V log V + E log V)

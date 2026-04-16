@@ -1,3 +1,6 @@
+from collections import deque
+from typing import List
+
 class Solution: # bfs queue O(V + E)
     def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
         word_set = set(wordList)

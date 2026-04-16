@@ -1,3 +1,5 @@
+from typing import List
+
 class Solution: # dynamic programming O(n)
     def climbStairs(self, n: int) -> int:
         if n == 0: return 0

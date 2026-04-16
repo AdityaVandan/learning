@@ -1,3 +1,6 @@
+from collections import deque
+from typing import List
+
 class Solution1: # bfs queue O(V + E)
     def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         graph = {}
