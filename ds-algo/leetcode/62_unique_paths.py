@@ -18,3 +18,14 @@ class Solution2: # dynamic programming solution
             for j in range(1,n):
                 cache[i][j] = cache[i-1][j] + cache[i][j-1]
         return cache[m-1][n-1]
+
+class Solution3: # dynamic programming solution (space optimized)
+    def uniquePaths(self, m: int, n: int) -> int:
+        cache = [[-1]*n for i in range(2)]
+        for j in range(n): cache[0][j] = 1
+        cache[1][0] = 1
+        for i in range(1,m):
+            for j in range(1,n):
+                cache[1][j] = cache[0][j] + cache[1][j-1]
+            cache.reverse()
+        return cache[0][n-1]
