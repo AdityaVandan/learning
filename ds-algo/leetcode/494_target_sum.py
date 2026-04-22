@@ -36,4 +36,20 @@ class Solution2: # dp solution with space optimization
         
         return recursion(len(nums)-1, target)
 
-# TODO: dp + space optimization
+class Solution3: # dp solution
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        dp = {}
+        n = len(nums)
+        total = 0
+        for i in range(n): total+= abs(nums[i])
+        for j in range(-total, total + 1): dp[(0, j)] = 0
+        dp[(0, nums[0])] += 1
+        dp[(0, -nums[0])] += 1
+        for i in range(1,n):
+            for j in range(-total, total + 1):
+                left = dp.get((i-1, j-nums[i]), 0)
+                right = dp.get((i-1, j+nums[i]), 0)
+                dp[(i, j)] = left + right
+                
+        return dp.get((n-1, target), 0)
+
