@@ -22,7 +22,7 @@ Contains exhaustively all the new concepts I learn daily
 - Protocol Buffers - concepts/ProtocolBufferExample
 - compression strategies - concepts/webaApiCompression
 
-###### AI Code suggestions are stopped for the repo in VSCode:
+###### AI Code suggestions are stopped for the repo in VSCode, don't use any other IDE since this repo is for learning:
 To undo them, update settings.json and remove the following:
 ```
     "editor.quickSuggestions": {
