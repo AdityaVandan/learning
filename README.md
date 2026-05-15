@@ -17,6 +17,7 @@ Contains exhaustively all the new concepts I learn daily
 - redis
 - kafka
 - claude code
+- rabbitmq
 
 ## Done
 - Protocol Buffers - concepts/ProtocolBufferExample
