@@ -2,6 +2,14 @@
 
 Runnable API that returns **every status code** documented in [`../ResponseCodes.md`](../ResponseCodes.md), each with a realistic scenario. Read the route docstrings in `routes/*.py` for learning notes and inline `curl` hints.
 
+## What to run first (quick start)
+
+1. Start the server (see **Run** below)
+2. Open the index: `GET /` (lists all status codes + their paths)
+3. Use either:
+   - **Postman collection** (recommended for exploring everything), or
+   - The **curl recipes** in this README
+
 ## Setup (`learningenv`)
 
 Use the repo-root virtualenv — do **not** create a local `venv` here.
@@ -9,6 +17,21 @@ Use the repo-root virtualenv — do **not** create a local `venv` here.
 ```bash
 # from repository root (learning/)
 source learningenv/bin/activate
+pip install -r concepts/system-design/REST/ResponseCodeExamples/requirements.txt
+```
+
+### If `learningenv` breaks (Homebrew Python moved)
+
+If you see errors like `bad interpreter ... python3.x: no such file or directory`, your venv points to a Python path that no longer exists.
+
+Recreate it from repo root:
+
+```bash
+deactivate 2>/dev/null || true
+rm -rf learningenv
+/opt/homebrew/bin/python3 -m venv learningenv
+source learningenv/bin/activate
+python -m pip install --upgrade pip
 pip install -r concepts/system-design/REST/ResponseCodeExamples/requirements.txt
 ```
 
@@ -23,6 +46,25 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 - Index of all demos: http://127.0.0.1:8000/
 - Swagger UI: http://127.0.0.1:8000/docs
 
+## Postman (recommended)
+
+Import this collection (same folder as this README):
+
+- `ResponseCodeExamples.postman_collection.json`
+
+Collection variables:
+
+- `baseUrl` (default `http://127.0.0.1:8000`)
+- `wsBaseUrl` (default `ws://127.0.0.1:8000`)
+- `userToken` / `adminToken`
+
+Notes:
+
+- The collection auto-saves `createdItemId` after running **POST `/codes/201`**.
+- The collection auto-saves `jobId` after running **POST `/codes/202`**.
+- For **423 Locked**, the collection includes two calls — run them in order to see the second return `423`.
+- For **429 Too Many Requests**, send the request multiple times quickly (rate limit is in-memory per IP).
+
 ## Demo tokens (401 / 403)
 
 | Token | Role |
@@ -36,6 +78,13 @@ curl -X DELETE http://127.0.0.1:8000/codes/403/admin-only -H "Authorization: Bea
 ```
 
 ## Key `curl` recipes
+
+### Recommended order for “stateful” demos
+
+- **201 Created**: run `POST /codes/201` first, then `GET /codes/201/items/{id}`
+- **202 Accepted**: run `POST /codes/202` first, then `GET /codes/202/jobs/{job_id}`
+- **423 Locked**: call `PUT /codes/423/report` twice (second call returns `423`)
+- **503 Maintenance**: toggle with `POST /admin/maintenance?enabled=true|false`
 
 ### Caching — 304 Not Modified
 
@@ -109,6 +158,7 @@ curl -i -X POST http://127.0.0.1:8000/codes/201 -H "Content-Type: application/js
 ResponseCodeExamples/
 ├── main.py              # App entry + index route
 ├── common.py            # Shared state + CODE_REGISTRY
+├── ResponseCodeExamples.postman_collection.json
 ├── requirements.txt
 ├── routes/
 │   ├── informational.py # 1xx

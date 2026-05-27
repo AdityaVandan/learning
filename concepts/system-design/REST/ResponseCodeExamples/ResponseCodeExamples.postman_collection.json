@@ -1,0 +1,404 @@
+{
+  "info": {
+    "_postman_id": "f5c8f5b0-4f7f-4d4b-b6df-8f4c6d7e4d31",
+    "name": "REST Response Code Examples (FastAPI)",
+    "description": "Postman collection for concepts/system-design/REST/ResponseCodeExamples. Set {{baseUrl}} then run requests to see status codes and headers.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "wsBaseUrl", "value": "ws://127.0.0.1:8000" },
+    { "key": "userToken", "value": "user-token" },
+    { "key": "adminToken", "value": "admin-token" },
+    { "key": "createdItemId", "value": "" },
+    { "key": "jobId", "value": "" },
+    { "key": "longSegment", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    { "key": "bigHeader", "value": "" },
+    { "key": "bigBody", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Index & Health",
+      "item": [
+        {
+          "name": "GET / (index)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/" }
+        },
+        {
+          "name": "GET /health",
+          "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+        }
+      ]
+    },
+    {
+      "name": "1xx Informational",
+      "item": [
+        {
+          "name": "POST /codes/100 (Expect: 100-continue)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Expect", "value": "100-continue" }],
+            "body": { "mode": "raw", "raw": "body" },
+            "url": "{{baseUrl}}/codes/100"
+          }
+        },
+        {
+          "name": "WS /codes/101/ws (Switching Protocols)",
+          "request": {
+            "method": "GET",
+            "url": "{{wsBaseUrl}}/codes/101/ws"
+          }
+        },
+        {
+          "name": "GET /codes/102",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/102" }
+        },
+        {
+          "name": "GET /codes/103 (Early Hints)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/103" }
+        }
+      ]
+    },
+    {
+      "name": "2xx Success",
+      "item": [
+        {
+          "name": "GET /codes/200",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/200" }
+        },
+        {
+          "name": "POST /codes/201 (Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "  const body = pm.response.json();",
+                  "  if (body && body.id) pm.collectionVariables.set('createdItemId', body.id);",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"widget\"\n}" },
+            "url": "{{baseUrl}}/codes/201"
+          }
+        },
+        {
+          "name": "GET /codes/201/items/{{createdItemId}}",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/201/items/{{createdItemId}}" }
+        },
+        {
+          "name": "POST /codes/202 (Accepted / async job)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "  const body = pm.response.json();",
+                  "  if (body && body.job_id) pm.collectionVariables.set('jobId', body.job_id);",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "POST", "url": "{{baseUrl}}/codes/202" }
+        },
+        {
+          "name": "GET /codes/202/jobs/{{jobId}}",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/202/jobs/{{jobId}}" }
+        },
+        {
+          "name": "GET /codes/203 (Non-Authoritative Information)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/203" }
+        },
+        {
+          "name": "DELETE /codes/204 (No Content)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/codes/204" }
+        },
+        {
+          "name": "POST /codes/205 (Reset Content)",
+          "request": { "method": "POST", "url": "{{baseUrl}}/codes/205" }
+        },
+        {
+          "name": "GET /codes/206/document (Partial Content)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Range", "value": "bytes=0-9" }],
+            "url": "{{baseUrl}}/codes/206/document"
+          }
+        },
+        {
+          "name": "POST /codes/207 (Multi-Status)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"ops\": [\n    { \"id\": 1 },\n    { \"id\": 2 }\n  ]\n}" },
+            "url": "{{baseUrl}}/codes/207"
+          }
+        },
+        {
+          "name": "GET /codes/208 (Already Reported)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/208" }
+        },
+        {
+          "name": "GET /codes/226 (IM Used)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/226" }
+        }
+      ]
+    },
+    {
+      "name": "3xx Redirection",
+      "item": [
+        { "name": "GET /codes/300", "request": { "method": "GET", "url": "{{baseUrl}}/codes/300" } },
+        { "name": "GET /codes/301", "request": { "method": "GET", "url": "{{baseUrl}}/codes/301" } },
+        { "name": "GET /codes/302", "request": { "method": "GET", "url": "{{baseUrl}}/codes/302" } },
+        { "name": "POST /codes/303", "request": { "method": "POST", "url": "{{baseUrl}}/codes/303" } },
+        {
+          "name": "GET /codes/304/document (If-None-Match -> 304)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "If-None-Match", "value": "\"doc-v1\"" }],
+            "url": "{{baseUrl}}/codes/304/document"
+          }
+        },
+        { "name": "PUT /codes/307", "request": { "method": "PUT", "url": "{{baseUrl}}/codes/307" } },
+        { "name": "DELETE /codes/308", "request": { "method": "DELETE", "url": "{{baseUrl}}/codes/308" } }
+      ]
+    },
+    {
+      "name": "4xx Client Errors",
+      "item": [
+        {
+          "name": "POST /codes/400 (Bad Request: invalid JSON)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "not-json" },
+            "url": "{{baseUrl}}/codes/400"
+          }
+        },
+        {
+          "name": "GET /codes/401 (no token -> 401)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/401" }
+        },
+        {
+          "name": "GET /codes/401 (user-token -> 200)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/codes/401"
+          }
+        },
+        {
+          "name": "GET /codes/402",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/402" }
+        },
+        {
+          "name": "DELETE /codes/403/admin-only (user-token -> 403)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/codes/403/admin-only"
+          }
+        },
+        {
+          "name": "DELETE /codes/403/admin-only (admin-token -> 200)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/codes/403/admin-only"
+          }
+        },
+        {
+          "name": "GET /codes/404/does-not-exist",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/404/does-not-exist" }
+        },
+        {
+          "name": "POST /codes/405 (Method Not Allowed)",
+          "request": { "method": "POST", "url": "{{baseUrl}}/codes/405" }
+        },
+        {
+          "name": "GET /codes/406 (Accept: application/xml -> 406)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/xml" }],
+            "url": "{{baseUrl}}/codes/406"
+          }
+        },
+        { "name": "GET /codes/407", "request": { "method": "GET", "url": "{{baseUrl}}/codes/407" } },
+        { "name": "GET /codes/408", "request": { "method": "GET", "url": "{{baseUrl}}/codes/408" } },
+        {
+          "name": "POST /codes/409/orders (email taken -> 409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"taken@example.com\",\n  \"quantity\": 1\n}" },
+            "url": "{{baseUrl}}/codes/409/orders"
+          }
+        },
+        { "name": "GET /codes/410/gone-resource", "request": { "method": "GET", "url": "{{baseUrl}}/codes/410/gone-resource" } },
+        { "name": "PUT /codes/411 (no Content-Length -> 411)", "request": { "method": "PUT", "url": "{{baseUrl}}/codes/411" } },
+        {
+          "name": "PUT /codes/412/document (If-Match wrong -> 412)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "If-Match", "value": "\"wrong-etag\"" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": "{{baseUrl}}/codes/412/document"
+          }
+        },
+        {
+          "name": "POST /codes/413 (body > 1000 bytes -> 413)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.collectionVariables.get('bigBody')) {",
+                  "  pm.collectionVariables.set('bigBody', 'x'.repeat(1100));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": { "mode": "raw", "raw": "{{bigBody}}" },
+            "url": "{{baseUrl}}/codes/413"
+          }
+        },
+        {
+          "name": "GET /codes/414/{{longSegment}} (very long -> 414)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/codes/414/{{longSegment}}" }
+        },
+        {
+          "name": "POST /codes/415 (Content-Type text/plain -> 415)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "text/plain" }],
+            "body": { "mode": "raw", "raw": "hello" },
+            "url": "{{baseUrl}}/codes/415"
+          }
+        },
+        {
+          "name": "GET /codes/416/range-test (invalid Range -> 416)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Range", "value": "bytes=99999-100000" }],
+            "url": "{{baseUrl}}/codes/416/range-test"
+          }
+        },
+        {
+          "name": "POST /codes/417 (Expect custom-magic -> 417)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Expect", "value": "custom-magic" }],
+            "url": "{{baseUrl}}/codes/417"
+          }
+        },
+        { "name": "GET /codes/418", "request": { "method": "GET", "url": "{{baseUrl}}/codes/418" } },
+        { "name": "GET /codes/421", "request": { "method": "GET", "url": "{{baseUrl}}/codes/421" } },
+        {
+          "name": "POST /codes/422 (valid JSON, invalid dates -> 422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"a@b.com\",\n  \"start_date\": \"2026-06-01\",\n  \"end_date\": \"2026-01-01\"\n}"
+            },
+            "url": "{{baseUrl}}/codes/422"
+          }
+        },
+        {
+          "name": "PUT /codes/423/report (1st call locks -> 200)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/codes/423/report" }
+        },
+        {
+          "name": "PUT /codes/423/report (2nd call -> 423)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/codes/423/report" }
+        },
+        { "name": "POST /codes/424", "request": { "method": "POST", "url": "{{baseUrl}}/codes/424" } },
+        { "name": "POST /codes/425", "request": { "method": "POST", "url": "{{baseUrl}}/codes/425" } },
+        { "name": "GET /codes/426", "request": { "method": "GET", "url": "{{baseUrl}}/codes/426" } },
+        {
+          "name": "PUT /codes/428/document (missing If-Match -> 428)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": "{{baseUrl}}/codes/428/document"
+          }
+        },
+        { "name": "GET /codes/429", "request": { "method": "GET", "url": "{{baseUrl}}/codes/429" } },
+        {
+          "name": "GET /codes/431 (send huge X-Demo-Big -> 431)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.collectionVariables.get('bigHeader')) {",
+                  "  pm.collectionVariables.set('bigHeader', 'x'.repeat(9000));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Demo-Big", "value": "{{bigHeader}}" }],
+            "url": "{{baseUrl}}/codes/431"
+          }
+        },
+        { "name": "GET /codes/451/XX (blocked -> 451)", "request": { "method": "GET", "url": "{{baseUrl}}/codes/451/XX" } }
+      ]
+    },
+    {
+      "name": "5xx Server Errors",
+      "item": [
+        { "name": "GET /codes/500 (explicit 500)", "request": { "method": "GET", "url": "{{baseUrl}}/codes/500" } },
+        { "name": "GET /codes/500?crash=true (raises exception)", "request": { "method": "GET", "url": "{{baseUrl}}/codes/500?crash=true" } },
+        { "name": "GET /codes/501/legacy-feature", "request": { "method": "GET", "url": "{{baseUrl}}/codes/501/legacy-feature" } },
+        { "name": "GET /codes/502", "request": { "method": "GET", "url": "{{baseUrl}}/codes/502" } },
+        {
+          "name": "POST /admin/maintenance?enabled=true",
+          "request": { "method": "POST", "url": "{{baseUrl}}/admin/maintenance?enabled=true" }
+        },
+        { "name": "GET /codes/503 (maintenance -> 503)", "request": { "method": "GET", "url": "{{baseUrl}}/codes/503" } },
+        {
+          "name": "POST /admin/maintenance?enabled=false",
+          "request": { "method": "POST", "url": "{{baseUrl}}/admin/maintenance?enabled=false" }
+        },
+        { "name": "GET /codes/504", "request": { "method": "GET", "url": "{{baseUrl}}/codes/504" } },
+        { "name": "GET /codes/505", "request": { "method": "GET", "url": "{{baseUrl}}/codes/505" } },
+        { "name": "GET /codes/506", "request": { "method": "GET", "url": "{{baseUrl}}/codes/506" } },
+        { "name": "POST /codes/507", "request": { "method": "POST", "url": "{{baseUrl}}/codes/507" } },
+        { "name": "GET /codes/508", "request": { "method": "GET", "url": "{{baseUrl}}/codes/508" } },
+        {
+          "name": "POST /codes/510 (missing header -> 510)",
+          "request": { "method": "POST", "url": "{{baseUrl}}/codes/510" }
+        },
+        {
+          "name": "POST /codes/510 (with X-EXT-Token -> 200)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-EXT-Token", "value": "demo-token" }],
+            "url": "{{baseUrl}}/codes/510"
+          }
+        },
+        { "name": "GET /codes/511", "request": { "method": "GET", "url": "{{baseUrl}}/codes/511" } }
+      ]
+    }
+  ]
+}
+
