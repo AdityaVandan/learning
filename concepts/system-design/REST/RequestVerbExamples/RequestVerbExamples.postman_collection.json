@@ -1,0 +1,150 @@
+{
+  "info": {
+    "_postman_id": "d1c4e2e7-6a2d-4e71-9a7f-3cbb0b6b0c10",
+    "name": "REST Request Verb Examples (FastAPI)",
+    "description": "Postman collection for concepts/system-design/REST/RequestVerbExamples. Set {{baseUrl}} then run requests grouped by verb to see typical REST semantics.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8001" },
+    { "key": "createdItemId", "value": "" },
+    { "key": "createdItemEtag", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Index & Health",
+      "item": [
+        { "name": "GET / (index)", "request": { "method": "GET", "url": "{{baseUrl}}/" } },
+        { "name": "GET /health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } }
+      ]
+    },
+    {
+      "name": "POST",
+      "item": [
+        {
+          "name": "POST /verbs/post/items (create, 201 + Location)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "  const body = pm.response.json();",
+                  "  const item = body && body.item;",
+                  "  if (item && item.id) pm.collectionVariables.set('createdItemId', item.id);",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"widget\",\n  \"tags\": [\"demo\"]\n}" },
+            "url": "{{baseUrl}}/verbs/post/items"
+          }
+        },
+        {
+          "name": "POST /verbs/post/actions/increment (non-idempotent)",
+          "request": { "method": "POST", "url": "{{baseUrl}}/verbs/post/actions/increment" }
+        }
+      ]
+    },
+    {
+      "name": "GET",
+      "item": [
+        { "name": "GET /verbs/get/items (list)", "request": { "method": "GET", "url": "{{baseUrl}}/verbs/get/items" } },
+        {
+          "name": "GET /verbs/get/items/{{createdItemId}} (save ETag)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "  const etag = pm.response.headers.get('ETag');",
+                  "  if (etag) pm.collectionVariables.set('createdItemEtag', etag);",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "url": "{{baseUrl}}/verbs/get/items/{{createdItemId}}" }
+        },
+        {
+          "name": "GET /verbs/get/items/{{createdItemId}} (If-None-Match -> 304)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "If-None-Match", "value": "{{createdItemEtag}}" }],
+            "url": "{{baseUrl}}/verbs/get/items/{{createdItemId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT",
+      "item": [
+        {
+          "name": "PUT /verbs/put/items/{{createdItemId}} (replace, If-Match)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "If-Match", "value": "{{createdItemEtag}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"widget-replaced\",\n  \"tags\": [\"demo\", \"replaced\"]\n}" },
+            "url": "{{baseUrl}}/verbs/put/items/{{createdItemId}}"
+          }
+        },
+        {
+          "name": "PUT /verbs/put/items/new-id-1234 (upsert create, 201)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"upserted\",\n  \"tags\": []\n}" },
+            "url": "{{baseUrl}}/verbs/put/items/new-id-1234"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PATCH",
+      "item": [
+        {
+          "name": "PATCH /verbs/patch/items/{{createdItemId}} (partial, If-Match)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "If-Match", "value": "{{createdItemEtag}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"widget-patched\"\n}" },
+            "url": "{{baseUrl}}/verbs/patch/items/{{createdItemId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE",
+      "item": [
+        { "name": "DELETE /verbs/delete/items/{{createdItemId}} (204)", "request": { "method": "DELETE", "url": "{{baseUrl}}/verbs/delete/items/{{createdItemId}}" } },
+        { "name": "DELETE /verbs/delete/items/{{createdItemId}} (404 on second call)", "request": { "method": "DELETE", "url": "{{baseUrl}}/verbs/delete/items/{{createdItemId}}" } }
+      ]
+    },
+    {
+      "name": "HEAD & OPTIONS",
+      "item": [
+        { "name": "HEAD /verbs/head/items", "request": { "method": "HEAD", "url": "{{baseUrl}}/verbs/head/items" } },
+        { "name": "OPTIONS /verbs/options/any (Allow)", "request": { "method": "OPTIONS", "url": "{{baseUrl}}/verbs/options/any" } }
+      ]
+    },
+    {
+      "name": "TRACE & CONNECT",
+      "item": [
+        { "name": "TRACE /verbs/trace", "request": { "method": "TRACE", "url": "{{baseUrl}}/verbs/trace" } },
+        { "name": "CONNECT /verbs/connect", "request": { "method": "CONNECT", "url": "{{baseUrl}}/verbs/connect" } }
+      ]
+    }
+  ]
+}
+
