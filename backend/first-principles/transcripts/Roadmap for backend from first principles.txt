@@ -1,0 +1,872 @@
+00:00 backend engineering is a very wide scope
+00:04 and when I say backend engineering it is
+00:07 much more than building a set of crud
+00:09 apis the way I think backend engineering
+00:12 is about building reliable scalable fall
+00:15 tolerant and maintainable code bases and
+00:19 efficient
+00:20 systems and if one were to start today
+00:25 to learn back in development there are a
+00:27 lot of resources and
+00:31 at least 1,00
+00:32 resources but how do you decide what to
+00:35 learn how do you prioritize how do you
+00:37 see the big picture when and how all
+00:39 these different concepts come together
+00:42 and this is the reason it takes people
+00:43 years to get their head around a lot of
+00:45 these Concepts and principles because
+00:48 people primarily start with a limited
+00:50 scope of training uh whether it is from
+00:52 a college or a boot camp or a simple cop
+00:57 course and they eventually build onp top
+01:00 of that with trial and error and with
+01:02 help of other developers over time now I
+01:05 am a backend engineer and I have faced
+01:08 this struggle initially when I started
+01:10 out I had to constantly search for
+01:12 resources learn from other developers I
+01:15 have read a lot of books on backend
+01:17 development I have studied hundreds of
+01:19 open- source code bases to see how
+01:22 people in the industry are building
+01:24 stuff and it was a very timec consuming
+01:26 procedure and the second problem is
+01:29 people start with backend development
+01:32 from a particular language or Frameworks
+01:35 point of view it could be Express or
+01:37 spring boot or Ruby on Rails and the
+01:41 problem with that is you look at the
+01:44 problems that you solve with the lens of
+01:46 your particular language and ecosystem
+01:48 and there are blind spots in that let's
+01:51 imagine you have to switch to a
+01:52 different language let's say you were
+01:55 working with rubyan rails for years and
+01:57 one day your company decided to migrate
+01:59 to golang for performance reasons in
+02:01 that situation how much of your
+02:03 knowledge can you transfer if you don't
+02:06 understand the underlying systems so
+02:08 here I have decided to put together a
+02:11 comprehensive list of videos which are
+02:13 based on foundational concepts of a
+02:15 backend system and these are from
+02:17 various books that I've read over the
+02:19 years the open source code base we'll
+02:21 start with a very high level
+02:23 understanding of how backend systems
+02:25 work behind the scenes we'll look at how
+02:27 request from browser flows through
+02:29 different hops the network firewalls
+02:32 over the internet and how it is routed
+02:34 to our backend server that is situated
+02:37 in a remote AWS server and how it
+02:39 responds to that request and we'll look
+02:42 at what the response looks like and that
+02:44 should give us a pretty vivid idea of
+02:47 how systems communicate how a client
+02:50 communicates with a server and how the
+02:51 server responds from there we'll move to
+02:54 understanding HTTP protocol what is the
+02:57 role it plays and how the communication
+02:59 is established through HTTP and how HTTP
+03:03 raw messages look like and what are the
+03:05 HTTP headers what are the role of the
+03:07 headers the different types of headers
+03:09 like request headers or representational
+03:12 headers General headers and security
+03:14 headers and we'll look at different
+03:16 types of HTTP methods like get method
+03:18 post put delete and when to use them and
+03:21 what are the semantics and what are the
+03:23 principles behind them we'll look at
+03:26 what is the cost flow and how does it
+03:28 work we'll look at how simple request
+03:31 defers from a pre-flight request and how
+03:33 a pre-flight request FL looks like from
+03:35 our browser to the server and back to
+03:37 our browser we'll look at HTTP responses
+03:39 the structure of it and different status
+03:42 codes that server returns and when to
+03:44 return which type of code and what are
+03:47 the most commonly used HTTP status codes
+03:50 then we'll look at HTTP caching what are
+03:52 the different types of caching
+03:53 techniques using HTTP we have eags we
+03:55 have uh max age headers then we'll look
+03:58 at the differences between http 1. 1 and
+04:00 HTTP 2.0 and HTTP 3.0 and what are the
+04:04 differences between them we will look at
+04:06 how content negotiation looks like
+04:07 between client and server using
+04:09 different headers we'll see how
+04:10 persistent connections work in HTTP
+04:13 we'll look at HTTP compression different
+04:15 types of compression techniques like
+04:16 gzip and deflate and BR and which is the
+04:20 commonly used technique we'll see the
+04:22 security aspect of it the SSL TLS and
+04:24 htps then we'll move on to routing how
+04:27 routing Maps URLs to server side logic
+04:29 and what is the connection between
+04:31 routing and HTTP methods different
+04:33 components of routes like path
+04:34 parameters and query parameters
+04:37 different types of routes static routes
+04:38 Dynamic routes nested routes
+04:40 hierarchical routes catchall Wild Card
+04:42 routes and regular expression based
+04:44 routes how to do API versioning using
+04:46 HTTP different types of versioning
+04:48 techniques we'll see what is the best
+04:50 way to deprecate it outout and what are
+04:51 the best practices in the industry we
+04:53 look at the benefits of Route grouping
+04:56 and how it helps with versioning
+04:58 permissions and shared middleware we'll
+04:60 see how to secure routes how to optimize
+05:02 route matching performance then we'll
+05:04 move on to serialization and der
+05:06 serialization this basically means how
+05:09 before sending it over to the network
+05:11 our server translates the data into a
+05:13 particular format and after receiving
+05:15 the data from uh let's say client over
+05:17 the internet and how and how it
+05:19 translates the data received from the
+05:21 client over the internet to its own
+05:23 native format that is called DC
+05:24 realization and we will see what is the
+05:26 need of it and how it helps with the
+05:29 interoperability standard the different
+05:31 formats that are used in serialization
+05:33 der serialization we have text based
+05:35 formats which is Json or XML we have
+05:38 binary formats which is prot off and
+05:40 what are the performance differences
+05:42 between these two and when to use which
+05:44 one we'll look at how different
+05:46 programming languages Implement
+05:47 serialization and der serialization we
+05:49 will explore a popular text based format
+05:51 for serialization and der serialization
+05:52 which is Json the structure of Json the
+05:54 different data types like strings
+05:56 numbers booleans arrays and objects how
+05:58 realization of nested objects and
+05:60 collections are handled in Json how DC
+06:02 serializing into data structures the
+06:04 native data structures works like in
+06:06 let's say python dictionary or goang
+06:09 structs or JavaScript object what are
+06:11 the common errors while dealing with
+06:13 Json like handling missing or extra
+06:15 Fields dealing with null values or date
+06:18 serialization issues and time zone
+06:20 issues and how to implement custom
+06:22 serialization while before sending or
+06:25 serializing data into Json we'll look at
+06:27 error handling and serialization der
+06:29 serialization for example invalid data
+06:31 data conversion errors unknown Fields
+06:33 look at the security concerns if it like
+06:35 injection attacks why to do validation
+06:37 before DC realization and validating
+06:40 Json schemas before processing data
+06:42 using Json schema validation we'll see
+06:44 the performance aspect of it like
+06:46 reducing the serialized data through
+06:48 compression and eliminating unnecessary
+06:50 Fields like serialization performance
+06:52 between text based and binary formats
+06:55 like Json versus protuff the tradeoffs
+06:57 between readability and performance
+06:59 because in text based format you can
+07:01 easily check the payload and see that
+07:03 does not work the same in binary formats
+07:05 but binary formats are faster so when
+07:08 you you use a binary format and when you
+07:10 use a text Bas format that is a valid
+07:11 trade-off then we'll move to
+07:13 authentication and authorization why do
+07:15 we use it different types of
+07:16 authentication like State full State L
+07:19 we have basic authentication better
+07:21 token authentications we'll look at
+07:23 sessions jws cookies we'll Deep dive on
+07:26 oo protocol and open ID connect we'll
+07:28 see how API keys work how multiactor
+07:31 authentications work what is salting
+07:33 hashing and different cryptographic
+07:35 techniques used in authorization we'll
+07:37 explore aack rback reback we'll look at
+07:40 what are the best practices in security
+07:42 like securing cookies avoiding csrf xss
+07:46 mitm like audit logging which basically
+07:49 means recording authentication
+07:51 authorization events for Audits and
+07:54 monitoring failed login attempts
+07:56 privilege escalation and access to
+07:58 sensitive resources we'll look at a
+07:60 skating authenticated related error
+08:01 messages preventing information leakage
+08:03 to attackers through detailed error
+08:05 messages like handling edge cases for
+08:07 example consistency in responses across
+08:09 different failure modes like rate
+08:11 limiting and account lockout we'll see
+08:13 how to avoid timing attacks for example
+08:15 attackers can exploit time differences
+08:17 in error responses to infer valid
+08:19 credentials for example an error for a
+08:22 wrong password might take longer than an
+08:24 error for a valid username because to
+08:26 check for a password you have to do some
+08:28 kind of hashing uh or uh some use some
+08:31 kind of cryptographic technique which
+08:33 takes a little bit of time so people can
+08:36 General the tiny bit of timing
+08:38 difference between them and guess
+08:40 passwords even though that's very
+08:42 difficult but we don't want to keep any
+08:44 security Halls then the next topic we'll
+08:46 explore is validation and transformation
+08:48 the different types of validation like
+08:50 syntactic validation for example
+08:51 checking whether resting is a email or
+08:53 not whether it is a valid phone number
+08:56 or not or whether it is a valid date
+08:58 format or not there is semantic valid
+08:60 for example a date uh a date of birth
+09:03 cannot be in the future or the age of a
+09:06 person should be between one and 120
+09:08 these are called semantic validations
+09:11 then we have type validation for example
+09:13 checking the input values match expected
+09:16 types whether it is a string or not
+09:17 whether it is an integer or not whether
+09:19 it is an array or not whether it is an
+09:21 object or not these types of checks are
+09:23 called type validation we'll see what
+09:25 are the best practices for validation
+09:27 what is the difference between client
+09:28 side validation and what is the of
+09:30 server side validation the importance of
+09:32 server side validation even if client
+09:34 side validation is already implemented
+09:35 because client side validation improves
+09:38 user experience by providing instant
+09:40 feedback but server side validation is
+09:42 the true security implementation because
+09:44 that is the gateway to your business
+09:45 logic we'll look at the importance of
+09:47 failing fast by reducing unnecessary
+09:49 processing by returning early and we'll
+09:51 look at uh why to keep consistency
+09:54 between front end validation and backend
+09:55 validation then there is Transformations
+09:58 for example type casting converting
+09:60 string to number or number to string
+10:01 because uh in query parameters or path
+10:04 parameters whatever we receive is a
+10:06 string but let's say we are expecting an
+10:08 ID field which is a number so before we
+10:10 send it to our handlers we have to
+10:12 convert that string into a number so
+10:14 that step is called a transformation
+10:16 which we have to take care of in our
+10:17 validation Pipeline and different date
+10:20 formats for example the front end might
+10:22 send a different format or we might be
+10:24 expecting a time stamp so that also has
+10:27 to taken care of in the validation
+10:28 pipeline then there is normalization for
+10:31 example converting an email to lower
+10:33 case or trimming white space from a
+10:35 string or adding country code to a phone
+10:37 number these are called normalizations
+10:39 then there is sanitization for security
+10:41 issues for example we have to sanitize a
+10:45 string that is submitted by the user to
+10:47 prevent attacks like SQL injection then
+10:49 there is complex validation Logic for
+10:51 example relationships let's say User
+10:54 submitted a form and it has two Fields
+10:56 one is password and another is confirm
+10:58 password so we have to check whether the
+10:60 two strings are the same or not so that
+11:02 is a relationship based validation then
+11:04 there is conditional validation so let's
+11:06 say in the form there are two Fields one
+11:08 is partner name and the second is
+11:12 married which is a Boolean true or false
+11:14 so a partner field might only be
+11:16 required if the married is true so that
+11:18 is a conditional validation so these
+11:20 kinds of checks we have to do then there
+11:22 is chain validation like converting a
+11:24 string to lower case then roving special
+11:26 characters and then checking its length
+11:28 then we'll look at error handling in
+11:29 validation like sending meaningful error
+11:31 messages to front end so that the user
+11:33 can fix them and aggregating all
+11:36 validation errors in one response for
+11:37 client side display or Aus skating error
+11:40 messages so instead of saying invalid
+11:42 password we'll have to say invalid
+11:44 credentials to prevent different types
+11:46 of attacks then we will see how to
+11:48 gracefully handle failed Transformations
+11:50 for example an invalid Json and a failed
+11:52 date conversion and how to let the user
+11:54 know in a meaningful message then we'll
+11:57 look at the performance trade-offs of
+11:58 validation and how to optimize it by
+12:00 returning early avoiding redundant
+12:03 validations then our next topic is going
+12:05 to be middleware we'll look at what is a
+12:08 middleware and when to use them what are
+12:11 the common use cases of middlewares the
+12:13 role of a middleware in a request cycle
+12:15 for example a pre-quest middleware or a
+12:17 post response middleware the flow of
+12:19 middlewares for example techniques like
+12:21 chaining a middleware is executed in a
+12:23 sequence passing control to the next
+12:25 middleware until request reaches its
+12:27 final Handler how to order middleware is
+12:29 appropriate for example we have to go in
+12:31 this order we have to log the request we
+12:33 have to check whether the user is
+12:34 authenticated or not we have to do
+12:37 validation and we have to do route
+12:39 handling and then we have to do error
+12:40 handling so this order matters in
+12:43 middleware flow we'll see how the next
+12:45 function Works in middleware and exiting
+12:48 middleware early how middleware can SE
+12:50 circuit the request pipeline by handling
+12:52 404 errors we'll look at some of the
+12:54 common middlewares like security
+12:56 middlewares which add security headers
+12:58 like X content type or strict Transport
+13:00 Security or content security policy or
+13:03 middlewares which add appropriate course
+13:06 headers to every single request or
+13:08 response and middleware to avoid csrf
+13:10 attack middleware to rate limit then we
+13:12 have authentication middleware to reuse
+13:16 the route protecting logic across our
+13:18 apps then we have logging and monitoring
+13:20 middlewares for request logging or
+13:22 structur logging for observability or
+13:25 easier debugging in production then we
+13:27 have error handling middlewares which
+13:28 catches and form mats application Level
+13:30 errors for consistent API responses then
+13:32 we have compression or performance
+13:34 related middlewares which basically
+13:36 compresses response bodies to reduce the
+13:38 size of data sent over the networks then
+13:40 we have data passing middleware passing
+13:42 incoming request bodies like Json URL
+13:44 encoded forms and file uploads handles
+13:46 multiplatform data for the file uploads
+13:48 then we'll look at the performance and
+13:50 scalability aspect of middleware like
+13:52 what are the best practices to keep
+13:54 middlewares lightweight and efficient
+13:56 ensuring middleware is applied in the
+13:57 correct order or how how middleware
+13:60 order can affect the performance and
+14:01 security of the application the next
+14:03 topic is going to be request context
+14:05 request context basically means the
+14:07 metadata that is often passed through
+14:10 application middlewares controllers and
+14:12 services it is kind of a request coped
+14:15 State right the state is only valid for
+14:18 that request so here we'll explore the
+14:21 life cycle of a request maintaining
+14:23 State for the duration of a request
+14:24 sharing data across different layers of
+14:26 the application without coupling how
+14:28 context provides a temporary request
+14:30 scoped State we look at what are the
+14:31 different components of a request
+14:33 context the request metadata for example
+14:36 the HTTP method the URL headers the
+14:38 query parameters and the body and there
+14:40 is the session and user information for
+14:42 example in the authentication middleware
+14:44 we fetch the user information and then
+14:46 we add it to the request context so for
+14:48 that request scope the users information
+14:50 is injected into the context then we
+14:52 have tracking and loging information
+14:54 like unique request IDs or Trace IDs
+14:57 then we have request specific data like
+14:58 custom data in injected during the
+14:60 request life cycle like caching data
+15:01 permission checks we'll look at what are
+15:03 the use cases for example authentication
+15:05 rate limiting tracing logging we'll
+15:07 explore the connection between
+15:08 middlewares and request contexts we'll
+15:10 see what are the different types of
+15:11 timeouts the request timeouts custom
+15:13 timeouts cancellation signals we'll see
+15:16 what are the best practices like keeping
+15:17 it lightweight to prevent memory
+15:19 overhead ensuring context data is
+15:21 cleaned up after request life cycle to
+15:22 prevent memory leaks avoiding tightly
+15:24 coupling components through context or
+15:26 over relying on it for passing data then
+15:28 we'll move to handlers and controllers
+15:31 the MVC pattern and what handlers and
+15:33 controllers and services the
+15:34 responsibilities of all of them and
+15:36 reducing code with middleware then we
+15:38 have centralized error handling in
+15:40 handlers and consistent success and
+15:42 error message formats and how to
+15:44 implement them in controllers then we'll
+15:46 look at the different types of crud
+15:48 operations like how cud operations map
+15:50 HTTP methods and what are the common
+15:52 apis associated with each method for
+15:54 example post method is usually used for
+15:57 creation and submissions and the status
+15:60 code is usually 2011 created or a400 if
+16:04 it's a bad request and get requests are
+16:06 usually associated with fetching a list
+16:07 of resources or fetching a single
+16:09 resource and we have put and Patch to
+16:12 update resources and delete to delete
+16:14 resources we look at how to implement
+16:16 pagination and how to implement a search
+16:19 API how to do sorting and how to do
+16:22 filtering and we'll see what are the
+16:24 best practices for example strict
+16:25 validation consistent response
+16:27 formatting limiting payload redacting
+16:30 sensitive Fields error handling
+16:31 authentication and authorization then
+16:33 we'll explore what is the restful
+16:35 architecture and what are the best
+16:36 practices for implementing rest apis the
+16:39 principle of Designing apis around
+16:42 resources and sticking to sttp semantics
+16:44 and best practices for filtering and
+16:46 pagination uh what are the different
+16:48 types of versioning like URI versioning
+16:50 header versioning query string media
+16:52 type we'll see how to design apis with
+16:55 open API spec in mind you'll see content
+16:58 negotiation capturing exceptions and
+16:60 providing meaningful messages supporting
+17:02 client side caching e taxs and
+17:05 optimizing large requests and responses
+17:07 after that we'll move on to a very
+17:08 important topic which are databases in
+17:10 databases we'll look at relational and
+17:12 non-relational what are the differences
+17:14 and to when to use which we look at some
+17:16 of the theoretical Concepts like acid
+17:18 and cap theorem we'll take a look at
+17:20 basic quering and joints and database
+17:23 design best practices like schema design
+17:25 indexing we look at different
+17:27 optimization methods like query
+17:28 optimization caching connection pooling
+17:31 then we have data Integrity like
+17:33 constraints and validations transactions
+17:35 and concurrency we'll see how ORS work
+17:39 whether to use an orm what are the
+17:41 tradeoffs and we'll look at what are
+17:43 database migrations that we'll move on
+17:45 to business logic layer which is also
+17:46 called BL what is the role of it what
+17:49 are the different layers of a request
+17:50 cycle for example we have validation
+17:52 layer we have routing we have
+17:53 middlewares and we have handl and
+17:55 controls which all of them fall under
+17:57 presentation layer because they they
+17:59 deal with users data whether it is
+18:02 accepting users data or sending a user
+18:04 data so those are part of a presentation
+18:07 layer after that we have business logic
+18:09 layer which is the middle one which
+18:11 deals with our Core Business logic and
+18:15 after that we have the data access layer
+18:17 which deals with databases perform
+18:19 squaring or inserts or deletions and
+18:21 business logic layer uses the data
+18:23 access layer behind the scenes we'll
+18:25 look at different design principles like
+18:26 separation of concerns single
+18:28 responsibility open close dependency
+18:30 inversion what are the components of a
+18:32 business logic layer for example we have
+18:34 Services we have domain models which
+18:36 represent core entities like a user or
+18:38 an order then we have business tools
+18:40 then we have business validation logic
+18:42 we'll look at service layer design best
+18:44 practices we'll look at how to handle
+18:46 errors properly and how to propagate
+18:48 those errors from our service layer to
+18:50 our presentation layer after that we
+18:52 have caching we'll discuss what is the
+18:54 need of caching and how it differs from
+18:56 database persistence what are the
+18:57 different types of caching we have
+18:59 memory caching browser caching database
+19:01 caching and what is the need of client
+19:03 side caching and server side caching the
+19:04 different caching strategies for example
+19:07 cash aside right through right behind or
+19:09 right back read through the different
+19:11 cash eviction strategies for example lru
+19:14 lfu TTL and fifo need for cash
+19:17 invalidation like manual Cash
+19:19 invalidation Time To Live invalidation
+19:21 or event bash invalidation the different
+19:23 levels of caching level one which is in
+19:26 memory level two which is Network
+19:28 distributed and there is is the
+19:29 hierarchical caching which combines
+19:32 level one and level two caching
+19:34 strategies where frequently used data is
+19:36 stored in a fast small cach which is the
+19:38 level one cache and the less frequently
+19:40 used data is stored in a slower or large
+19:42 cach which is the level two cache we'll
+19:44 see how caching for web apps looks like
+19:47 that is caching static assets or caching
+19:49 API responses using headers we'll see
+19:51 how to cach with databases for example
+19:53 query caching like storing the results
+19:56 of heavy joints in redis and look at
+19:59 Cash hit and cash Miss ratio and how to
+20:03 optimize them after that we'll move on
+20:04 to transactional emails what are the use
+20:06 of them what are the common use cases
+20:08 the anatomy of a transactional email the
+20:10 subject the preheader the body header
+20:13 main content CTA footer and how to
+20:15 personalize with different Dynamic
+20:16 parameters then we have task queuing and
+20:19 scheduling what are the common use cases
+20:22 for example queuing might be used for
+20:24 sending emails or processing image files
+20:26 and third party API integration like
+20:28 Payment Processing or web hooks or
+20:30 offloading heavy computation like badge
+20:32 processing for example a user clicks a
+20:34 button to clear all my data so to clear
+20:37 all the users data we have to call we
+20:39 have to execute different queries for
+20:42 different tables to clear all the users
+20:44 data and that might take some time so
+20:45 instead of blocking the request we
+20:47 return the response instantly and we
+20:48 trigger a background job by pushing into
+20:51 the task Cube we'll look at scheduling
+20:52 what are the use cases for example for
+20:54 example running database backups
+20:56 recurring notifications and reminders
+20:58 data synchronization or maintenance
+21:01 related issues for example clearing logs
+21:04 or caches the different components of a
+21:06 task Q There is the producer Q consumer
+21:09 broker backend the flow of a task
+21:12 dependency for example it might be chain
+21:14 dependency or it might have parent child
+21:16 relationship we look at task groups
+21:18 executing multiple task concurrently and
+21:20 waiting for all of them to complete at
+21:22 the same time we look at how to handle
+21:23 errors and Implement retries in task use
+21:27 we'll look at task prioritization and
+21:29 and rate limiting for example giving
+21:30 importance to task like Payment
+21:32 Processing before you process task like
+21:34 sending notifications after that we'll
+21:36 move on to elastic search why do we use
+21:38 elastic search and how does it work
+21:40 behind the scenes the different
+21:41 techniques that are used for example
+21:43 inverted index term frequency and
+21:45 inverse document frequency segments and
+21:47 shards what are the use cases of elastic
+21:49 search for example providing a type
+21:50 ahead experience or log analytics or
+21:53 social media search for example full
+21:55 text search for user profiles posts
+21:57 comments we'll see how to create and
+21:59 manage indexes we'll see how to search
+22:01 and query different types of searching
+22:03 basic searching full text search
+22:05 relevance scoring we'll see how to
+22:07 optimize search performance by tweaking
+22:09 text versus keyword Fields understanding
+22:11 analyzers and boosting and pagination
+22:13 we'll take a look at some of the
+22:15 advanced search patterns for example
+22:16 filtering aggregation fuzzy search then
+22:19 we'll see how kibana works and how to
+22:21 use elastic search in a user friendly
+22:23 way and different best practices for
+22:25 example defining field mappings
+22:27 explicitly optimizing the number number
+22:29 of shards indexing data in batches and
+22:31 avoiding wild cards then we have error
+22:33 handling the different types of errors
+22:35 in our apps could be syntax errors
+22:37 runtime errors logical errors and
+22:40 different error handling strategies for
+22:42 example fail safe or fail fast graceful
+22:44 degradation or prevention of Errors
+22:47 different practices for error handling
+22:48 for example catching early not
+22:49 swallowing errors custom error types
+22:51 failing gracefully logging errors and
+22:54 using stack traces we'll look at how
+22:56 Global error handlers work we'll see how
+22:58 to appropriate handle user facing errors
+23:00 like providing friendly error messages
+23:02 and providing actionable feedbacks we'll
+23:04 see the importance of monitoring and
+23:06 logging in error handling and different
+23:08 tools like Sentry or elk stack and
+23:12 different error alerts like email based
+23:14 alerts and slack based alerts after that
+23:17 we have config management what is
+23:19 exactly config management and how does
+23:21 it help with flexibility and decouples
+23:24 environment specific settings from
+23:25 application logic and what are the use
+23:28 cases for example example different
+23:30 environments using config management
+23:32 safely managing sensitive data such as
+23:34 API Keys database passwords and private
+23:36 certificates dynamically enabling and
+23:39 disabling features without changing
+23:40 codebase what are the best practices of
+23:42 config management different types of
+23:44 configs for example static configs like
+23:46 DB credentials and API end points
+23:49 Dynamic configs like feature Flags rate
+23:51 limits and sensitive configs like
+23:53 credentials tokens secrets and different
+23:56 sources of configs for example it could
+23:58 be EnV file or Json or yaml and what are
+24:01 the differences between using
+24:03 environment variables versus command
+24:05 line Flags versus static files after
+24:08 that we have logging monitoring and
+24:09 observability a very important topic
+24:11 we'll see what are the differences
+24:13 between logging tracing monitoring and
+24:15 observability the different types of
+24:17 logging like system logging application
+24:19 access security logs the different
+24:21 levels of logs like debug info one error
+24:25 fatal and we'll see the difference
+24:27 between structured logging and un
+24:28 structure logging and the best practices
+24:31 for logging like centralized logging log
+24:33 rotation and retention contextual and
+24:35 meaningful logs and avoiding sensitive
+24:37 data like passwords and API Keys then we
+24:40 will look at monitoring different types
+24:41 of monitoring like infrastructure
+24:43 monitoring application performance
+24:45 monitoring uptime monitoring the
+24:46 different tools that are used in
+24:48 monitoring like Prometheus grafana and
+24:50 how to manage alerts and notifications
+24:53 by defining thresholds creating alerts
+24:55 and avoiding alert fatigue by only
+24:57 creating action alerts and ensuring that
+24:60 alerts are meaningful and necessary then
+25:02 we'll take a look at observability the
+25:04 three pillars of observability which are
+25:06 logs metrics and traces the best
+25:08 practices around it the security and
+25:11 compliance of log management after that
+25:13 we'll move on to graceful shutdown why
+25:14 do we need graceful shutdown and how
+25:17 does it work behind the scenes what are
+25:19 the different use cases for example you
+25:21 might need it when server restarts or or
+25:23 scaling in Cloud environments or
+25:25 microservices or long running jobs how
+25:28 it works like signal handling sigor
+25:30 signant and sill signals what are the
+25:32 different steps of graceful shutdown for
+25:35 example it starts with capturing a
+25:36 signal and then it stops accepting
+25:39 requests then it completes an inflight
+25:41 requests and then it closes external
+25:43 resources like database connections or
+25:46 any open files Etc and at last it
+25:49 terminates the app after that we'll move
+25:51 on to security the different aspects of
+25:53 security in a backend code base avoiding
+25:55 different security attacks like SQL
+25:57 injection no SQL injection xss csrf
+25:60 broken authentication insecure
+26:02 deserialization and principles of a
+26:04 secure software design for example least
+26:07 privilege defense in depth fail secure
+26:09 defaults separation of Duties security
+26:12 by Design then we'll look at the
+26:14 importance of input validation and
+26:15 sanitization and rate limits and content
+26:18 security policy course and same side
+26:20 cookie and the importance of monitoring
+26:23 events after that we have scaling and
+26:25 performance the different metrics of
+26:26 performance like response time resource
+26:28 utilization identifying bottlenecks
+26:30 caching and database optimization for
+26:33 example avoiding n plus1 query problems
+26:36 and ensuring proper use of joints and
+26:38 using lazy loading where appropriate
+26:41 then we have using database indexes to
+26:43 speed of read operations on frequent VAR
+26:45 Fields like indexing foreign keys or
+26:47 search Fields how to process data in
+26:49 batches to minimize database load and
+26:51 improve performance for large data sets
+26:54 how to avoid memory leaks like closing
+26:56 file handles database connections or
+26:58 cleaning of after a long process
+26:60 minimizing Network overhead by reducing
+27:01 payload size and using compression we'll
+27:04 look at how to do performance testing
+27:05 and profiling we look at some of the
+27:07 best practices for writing performant
+27:09 code like focusing on writing clear and
+27:12 maintainable code first without
+27:14 premature optimization and writing
+27:16 modular code to make it easier to
+27:17 optimize individual components without
+27:19 affecting the entire system ensuring
+27:21 that if a particular resources under
+27:23 load are unavailable the system degrades
+27:25 gracefully without crashing and how to
+27:27 offload non critical tasks like sending
+27:30 emails or logging to background
+27:31 processes or task use to free of
+27:33 resources for more critical operations
+27:36 then we have concurrency and parallelism
+27:38 what are the difference between
+27:39 concurrency and parallelism and how
+27:41 concurrency helps in IO bound task and
+27:43 how parallelism helps in CPU bound tasks
+27:46 then we have object storage and large
+27:48 files we'll look at some of the common
+27:50 use cases when we use object storage
+27:52 like awss 3 and how to manage large
+27:55 files with chunking and streaming and
+27:58 we'll look at multiart file uploads then
+27:60 we have realtime backend systems where
+28:02 we take a look at web sockets or servers
+28:04 and events and pubs of architecture to
+28:06 that we have testing and code quality
+28:09 here we take a look at different types
+28:11 of testing unit testing integration
+28:13 testing end to end testing functional
+28:14 testing regression testing performance
+28:17 testing load and stress testing user
+28:19 acceptance testing security testing
+28:21 we'll take a look at what is test driven
+28:23 development how to automate test in cicd
+28:26 environments how to manage code quality
+28:28 with external linting and formatting
+28:30 tools and what are the measures of code
+28:32 quality and coverage like quality
+28:34 metrics like cyclomatic complexity which
+28:36 measures complexity of a function by
+28:38 counting the number of possible paths
+28:40 through the code and we have
+28:41 maintainability index which basically
+28:43 quantifies how easy it is to maintain a
+28:46 code based on the complexity lines of
+28:48 code and other factors then we'll take a
+28:50 look at a very interesting set of
+28:52 principles which is called 12 Factor app
+28:54 after that we'll move on to open API
+28:56 standards what is the need of this
+28:58 standards and why should we stick to it
+29:00 what are the benefits of it what are the
+29:02 use cases like documentation Automation
+29:05 and the ecosystem surrounding it like
+29:07 Swagger Corden postmen and what is the
+29:10 history the Swagger to open API
+29:12 transition and what are the different
+29:14 versions that are currently active and
+29:17 what are the key concepts of open API
+29:19 documents for example there is API pass
+29:21 the request and response definition
+29:23 there is parameters there is schemas and
+29:26 what is the structure of an OPN API
+29:27 document there is metadata there is
+29:30 paths there is components there is
+29:31 security definitions and there is
+29:33 responses we'll see what are the new
+29:35 features of open API 3.0 and 3.1 what
+29:38 are the tools surrounding open API for
+29:40 example Swagger UI Cen Postman what are
+29:42 the best practices like avoiding
+29:44 duplication and sticking to standards
+29:48 we'll look at a very interesting
+29:49 development method which is API First
+29:51 Development where you define your open
+29:53 API standard or write your open API spec
+29:56 first and then you start creating the
+29:57 apis after that we'll move on to web
+29:59 hooks what are the use cases of web
+30:01 hooks by like sending notification third
+30:03 party Integrations what are the
+30:04 differences between API versus web hook
+30:06 for the same use case for example for
+30:08 API we might have to use polling which
+30:10 is client side initiated compared to web
+30:13 hooks which is pushing is server
+30:15 initiated what are the key components of
+30:17 web hooks for example the web hook URL
+30:19 event triggers payload HTTP method the
+30:22 response handling what are the best
+30:24 practices surrounding web hooks like web
+30:26 hook signature verification like using
+30:28 http PS and quick response retry logic
+30:30 logging how to test web hooks with enro
+30:33 real world use cases like STP Payment
+30:35 Processing GitHub web hook slack Discord
+30:37 TWU Etc and at last we'll take a look at
+30:41 what are some devops Concepts and
+30:43 backend engineer should be familiar with
+30:44 for example some of the Core Concepts
+30:46 like continuous integration continuous
+30:48 delivery continuous deployment the
+30:51 devops practices like infrastructure is
+30:53 code config management Version Control
+30:56 the different tools surrounding devops
+30:58 for example creating containers with
+30:60 Docker or orchestrating container with
+31:02 kubernetes and cicd pipelines and how to
+31:05 scale your service horizontal scaling
+31:08 versus vertical scaling and different
+31:11 deployment strategies like red green
+31:12 deployment rolling deployment Etc and
+31:15 that's about it this is all the concepts
+31:18 that we are going to cover in the next
+31:20 30 or 40 videos so stay tuned

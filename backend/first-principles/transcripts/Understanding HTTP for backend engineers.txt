@@ -1,0 +1,1812 @@
+00:00 backend is huge and if we start
+00:02 discussing every single component that
+00:04 could be part of it we will be stuck
+00:06 here for years so what we will do is we
+00:08 will only discuss those topics which are
+00:11 used in majority of the code bases let's
+00:13 say 90% of them with that in mind let's
+00:15 talk about HTTP protocol the medium
+00:18 through which our browsers talk to our
+00:20 servers either to send data or to
+00:23 receive data from it and as I said there
+00:25 are a lot of other ways and protocols
+00:27 which clients and servers use to
+00:29 communicate with each other and HTTP
+00:32 being one of the most used ones we will
+00:34 focus on that now there are two ideas
+00:37 which are at the heart of HTTP protocol
+00:40 the first one being tessness what does
+00:43 it mean tessness basically means it has
+00:46 no memory of past interactions so each
+00:49 HTTP request carries all the necessary
+00:52 information for the server to process it
+00:54 such as headers or URLs and methods
+00:57 which we will see in a bit and after the
+00:59 server responds it forgets about the
+01:01 request if a client makes another
+01:03 request the server treats it as a new
+01:05 and unrelated event and it also means
+01:08 self-contained requests since the server
+01:10 does not remember pass requests each
+01:13 request must include all the necessary
+01:15 data such as authentication tokens or
+01:18 session information to handle that
+01:20 specific interaction for example in the
+01:23 case of accessing a user profile the
+01:25 client has to provide credentials like
+01:27 cookies or tokens on every request for
+01:30 for the server to know which user is
+01:32 requesting the data so what are the
+01:34 benefits of that what are the benefits
+01:36 of this stateless model the obvious one
+01:39 being Simplicity stateless design
+01:41 simplifies server architecture because
+01:43 the server does not need to store
+01:45 session information which would
+01:47 otherwise require additional resources
+01:49 and complexity and it also means
+01:52 scalability stateless protocol makes it
+01:55 easy to distribute request across
+01:57 multiple servers because no single
+01:59 server need needs to keep track of a
+02:01 session and if the server crashes it
+02:04 does not affect the state of a client
+02:05 interaction as there is no session or
+02:08 memory of a request that needs to be
+02:10 restored and having said that because
+02:13 HTTP is stateless developers often
+02:16 Implement State management techniques
+02:18 like cookies or sessions or tokens to
+02:21 maintain continuity in interactions
+02:23 where needed like user logins or
+02:26 shopping cards and we'll explore those
+02:29 soon in this series and the second idea
+02:31 is client server model in a typical HTTP
+02:34 request flow there is a client and there
+02:36 is a server always the client typically
+02:39 is a web browser or an application which
+02:42 initiates the communication by sending a
+02:45 request to the server the client is
+02:47 responsible for for providing all
+02:50 information needed by the server such as
+02:51 the URL of the resource or the headers
+02:54 and
+02:55 everything and then there is a server
+02:59 which hosts resources like websites or
+03:02 apis or other content and waits for
+03:05 incoming requests from the clients when
+03:07 the server receives a request it
+03:09 processes it and sends back the
+03:11 appropriate response such as a web page
+03:13 or data or error message or a Json file
+03:17 or a text file or any other kind of
+03:19 content now the thing to remember here
+03:21 is HTTP protocol states that
+03:25 communication is always initiated by the
+03:27 client to get some kind of resp response
+03:30 by the server and throughout our
+03:33 discussion we can go ahead and safely
+03:35 assume that HTTP and https are
+03:38 interchangeable because https to
+03:41 oversimplify it just a more secure
+03:44 version of HTTP but the underlying
+03:47 principles are the same with more
+03:48 security features like encryption and
+03:51 security certificates or TLS stuff like
+03:54 that which boarders too much into the
+03:56 network engineering domain also to send
+03:59 some kind of request or receive some
+04:02 kind of response first the client and
+04:04 the server need to establish some kind
+04:07 of connection mechanism right otherwise
+04:10 how are they going to communicate what
+04:12 is the medium of the communication and
+04:14 for that sgtp uses TCP
+04:17 TCP which is a protocol which is a
+04:20 transmission protocol essentially HTTP
+04:23 does not require the underlying
+04:24 transport protocol to be connection
+04:26 based it only requires it to be reliable
+04:29 and not lose message messages at minimum
+04:31 presenting an error in such cases and
+04:33 among the two most common transport
+04:35 protocols on the internet which are TCP
+04:37 and UDP TCP is considered to be more
+04:41 reliable HTTP therefore relies on the
+04:42 TCP standard which is connection based
+04:45 now this is called an OSI model which is
+04:48 often referred when we are talking about
+04:51 sending and receiving data over a
+04:53 network right and we as backend
+04:55 Engineers often deal with this layer the
+04:58 top layer the layer 7even application
+05:01 layer and so a lot of discussions for
+05:05 example the recent one which we talked
+05:07 about the TCP handshake and establishing
+05:10 connections and TLS encryptions they
+05:13 often border into these
+05:16 layers so they are mostly network
+05:20 engineering concepts of course it's it's
+05:22 good to know about those but if we start
+05:25 exploring those it'll be a rabbit hole
+05:27 and we'll have to cover a lot of
+05:29 Concepts right so what we'll do is we'll
+05:32 focus on the application layer with a
+05:34 brief about you know what happens in the
+05:36 netor layer like as I said HTTP uses TCP
+05:39 and TCP uses something like a 3-way
+05:42 handshake which if you're curious about
+05:45 you can just look up and study more on
+05:47 that now throughout the years we had
+05:49 different versions of HTTP which kept
+05:52 redefining how clients and servers send
+05:55 and receive data right in sttp 1.0 each
+05:59 request opened a new connection this led
+06:01 to inefficiencies since a connection had
+06:03 to be established and closed for every
+06:06 request and response which slowed
+06:08 performance in HTTP 1.1 they introduced
+06:11 something called as persistent
+06:13 connections allowing multiple request
+06:15 and responses over the same connection
+06:17 over the same TCP connection that was
+06:19 established before sending the request
+06:22 which significantly improved performance
+06:24 it also added stuff like chunk transfer
+06:26 encoding and better caching mechanisms
+06:29 in SCP 2.0 they introduced multiplexing
+06:32 allowing multiple requests or responses
+06:35 over a single collection it uses
+06:37 something called binary framing instead
+06:38 of text and supports header compression
+06:41 with Edge pack or and server push
+06:44 allowing servers to send resources
+06:46 before the client requests them now in
+06:48 sttp 3.0 built on quick protocol a
+06:51 transport layer protocol over UDP right
+06:54 instead of TCP it is designed over UDP
+06:57 which improved performance with faster
+06:59 connection establishment reduce latency
+07:02 and better handling of packet loss it
+07:05 also continues to support multiplexing
+07:07 without head ofline blocking which is
+07:09 still an issue in HTTP 2.0 now again
+07:11 that's a rabbit hole if you get too much
+07:14 into the network stuff all we need to
+07:16 remember is that from all these
+07:19 discussions that client and servers
+07:22 established some kind of network
+07:24 connection and messages are sent and
+07:27 received that's all you need to remember
+07:29 for now now that we mentioned message
+07:32 let's look at what HTTP messages look
+07:34 like request messages or response
+07:37 messages a request message is basically
+07:39 the one that is sent by the client and a
+07:42 response message is the one that is
+07:43 received by the client from the server
+07:45 so this is what a request message looks
+07:48 like in HTTP and this is what a response
+07:51 message looks like I intentionally took
+07:53 more complex messages which had more
+07:56 parameters and so that we can cover
+07:58 different different components one by
+08:00 one so on a high level I'll just explain
+08:02 what is what in this right this part
+08:05 this is called a request method this is
+08:07 the resource URL the one we are
+08:09 requesting from the server this is the
+08:12 HTTP version which says we are using
+08:14 HTTP version 1.1 which is the currently
+08:17 the most used one this is the host right
+08:21 which is our
+08:23 domain the front ends domain and these
+08:27 are this all of these things these are
+08:30 called headers right we will talk about
+08:32 headers soon there will be a blank line
+08:34 here after all the headers to signify
+08:36 that the headers are over and body
+08:40 starts this is called a request body
+08:43 some information the client wants to
+08:46 send to a server right and in the
+08:49 response message again we have the HTTP
+08:51 version have the status code and the
+08:55 value of the status code which basically
+08:57 means the status code 200 means okay
+08:60 right and we have again some response
+09:03 headers after that there is a blank line
+09:05 and we have the response
+09:07 body so let's talk about HTTP headers
+09:12 first this is very important since it's
+09:14 the major part of the request here and
+09:16 the responses on a high level what we
+09:18 can see is headers are basically key
+09:20 value pairs key value pairs of different
+09:23 different parameters that is sent over
+09:25 request or received over a response that
+09:29 is the first definition and the next
+09:31 question is why do we need headers why
+09:33 not send the all these values in the you
+09:36 know the URL or we have this request
+09:39 body here why send why create a
+09:42 different section just for sending more
+09:44 information or more met data about the
+09:46 request or the response why create
+09:49 another level of abstraction and in
+09:51 order to understand that let's take a
+09:53 real life example we send Parcels right
+09:56 ciers and we receive them the address of
+09:59 about the phone number of the recipient
+10:02 and different details right the the
+10:05 state the the PIN code and all of these
+10:07 things do we keep it inside the package
+10:11 or do we write it on top and we write it
+10:15 on top why because the one who is taking
+10:19 the parcel from the sender and to the
+10:22 receiver they need to know different
+10:24 informations in order to
+10:26 successfully transmit the package
+10:30 through different modes of transmission
+10:32 and if we kept all those information
+10:35 inside the parcel they have to open that
+10:39 right and which does not make any sense
+10:42 but just for the sake of the example
+10:44 they have to open that and they have to
+10:46 see who is the recipient again and again
+10:48 so let's say another person wants to see
+10:50 the address so again they have to open
+10:52 that so keeping the metadata the address
+10:56 and the information of the recipient on
+10:59 top of the parel uh gives a quick way of
+11:02 checking different metadata about the
+11:04 package sdtp headers can be thought of
+11:06 something like that but they have more
+11:08 uses before we go into the use cases
+11:12 let's see what are some different kinds
+11:14 of headers that we see so as you can see
+11:17 there are a lot of different types of
+11:18 headers so can we categorize them can we
+11:20 categorize them and different types of
+11:22 headers so let's see the first category
+11:24 can be request headers which are sent by
+11:27 the client to the server to provide some
+11:29 kind of information about the request
+11:31 itself it could be user agent which
+11:33 identifies what kind of client is that
+11:35 it is a browser or it is a it is Postman
+11:39 or it is some kind of server or it's a
+11:42 mobile app we have authorization which
+11:45 sends different credentials like bar
+11:47 token to the server to identify the user
+11:50 you have accept headers which provides
+11:52 informations like what kind of content
+11:55 we are expecting whether it is a Json
+11:57 whether it is a text whether it is an
+11:58 HTML file so request headers help server
+12:02 understand the client's environment its
+12:05 preferences and its capabilities then we
+12:08 have General headers which are used in
+12:10 both request and responses which have
+12:13 some metadata about the message itself
+12:16 for example the date of the message and
+12:18 different caching mechanisms like no
+12:21 cache or max age and the connection
+12:25 information whether to keep it alive or
+12:27 to close it so General header have some
+12:30 kind of information about the request
+12:32 message or the response message then we
+12:34 have representation headers which
+12:36 primarily deal with the representation
+12:38 of the resource being transmitted
+12:40 whether it could be a request body or a
+12:42 response message the content type
+12:45 describes the media type of the request
+12:47 or the response it could be Json or it
+12:49 could be HTML the content length describ
+12:52 the size of the resource in bites the
+12:54 content encoding specifies any encoding
+12:57 like G or D flare then we have eag a
+13:01 unique identifier which is mostly used
+13:03 for caching so representation headers
+13:06 provides information about the body of
+13:08 the message or the response ensuring the
+13:11 clients and servers know how to
+13:13 interpret and process request or the
+13:15 response then we have security headers
+13:17 which are used to enhance the security
+13:19 of the request and response by
+13:21 controlling behaviors like content
+13:22 loading cookies and encryption hsts
+13:25 ensures that the client only
+13:27 communicates with the server over https
+13:29 preventing protocol downgrade attack
+13:31 content security policy restricts the
+13:34 sources from which content like
+13:35 JavaScript or css and images can be
+13:38 loaded helping prevent cross site
+13:39 scripting attacks x-frame options
+13:42 prevents the web page from being
+13:43 embedded in iframe mitigating
+13:45 clickjacking attack X content type
+13:47 options ensures that the browser does
+13:49 not try to guess the mime type of the
+13:51 content preventing MIM type sniffing
+13:53 attack that cookie with HTTP only or
+13:56 secure Flags secures cookies by making
+13:58 them inaccessible with JavaScript and
+14:00 ensuring they are sent over https so
+14:03 security headers helps protect the
+14:05 client and server from a variety of
+14:07 attacks by controlling how the browser
+14:10 behaves with resources and enforcing
+14:12 security policies now there are two
+14:15 ideas that we see here while talking
+14:17 about HTTP headers one is
+14:20 extensibility HTTP is highly extensible
+14:23 because headers can be easily added or
+14:26 customized without altering the
+14:28 underlying protocol
+14:30 right we only have to add some kind of
+14:32 metadata and the whole flow of the
+14:35 interaction changes depending on that
+14:37 now headers can be defined and used for
+14:39 various purposes making HTTP adaptable
+14:42 to new technologies and use cases for
+14:44 instance security enhancements as we
+14:46 just talked about headers like strict
+14:48 Transport Security and Force Security
+14:50 connections custom headers developers
+14:52 can create custom headers like X custom
+14:55 header for specific application for
+14:57 their own use cases content negotiation
+14:59 the accept and the accept language and
+15:02 accept encoding headers allows servers
+15:04 to serve different versions of the
+15:06 content depending on the client's
+15:08 preference so the next part is the idea
+15:09 of remote control sgtp headers act as
+15:13 kind of a remote control on the server
+15:15 side they allow the client to send
+15:17 instructions or preferences to the
+15:20 server influencing how the server
+15:22 responds or processes requests for
+15:25 example content Ty negotiations clients
+15:28 can request specific formats using
+15:31 accept header and the server can respond
+15:33 with the appropriate format if the
+15:34 client says I want the HTML format the
+15:36 server sends the HTML and if the client
+15:38 says they want Json then the server
+15:40 sends the Json format then caching and
+15:44 expiration control the server can use
+15:46 headers like cach control or expires to
+15:48 control how long a resource should be
+15:51 cached by the client then authentication
+15:54 the client can authenticate itself to
+15:56 the server through authorization header
+15:58 influencing Access Control decisions
+16:01 right so these provide more capabilities
+16:05 on top of our messages which are very
+16:07 useful in a lot of instances now we have
+16:10 some kind of idea about the headers in
+16:13 HTTP and we will explore them in more
+16:16 depth when we are going through the
+16:18 demos let's move on to the next
+16:20 component of a HTTP message right the
+16:22 HTTP method HTTP methods exist to
+16:26 represent different kinds of actions
+16:28 that a CL client like a browser or an
+16:31 API consumer can request on a server
+16:33 instead of every request doing the same
+16:36 thing methods Define the
+16:38 intent the keyword note here is the
+16:43 intent the intent of the
+16:46 interaction this gives clear semantic
+16:49 meaning to each type of action and it is
+16:53 pretty intuitive in that sense we use
+16:55 get request to fetch some kind of data
+16:57 from the server and it should not modify
+17:00 anything on the server use post to
+17:03 create some data in the server and post
+17:05 request have a body which makes sense
+17:07 because how else would you send the user
+17:09 data to the server then we have
+17:12 patch which is used to update some data
+17:15 for example you have a users profile
+17:17 page where they can update their name
+17:20 and this also has a request body to send
+17:23 the data to the server we also have put
+17:26 which is also used to update data but
+17:29 what sets it apart from patch is
+17:32 whatever data that comes in request body
+17:34 should completely replace the previous
+17:36 instance basically patch can be thought
+17:38 of as an append action or a selective
+17:41 replacement while put is a complete
+17:44 replacement even though a lot of times
+17:46 developers use put when they should be
+17:48 using patch and go against the semantics
+17:51 so the thumb rule is always use patch
+17:54 unless you have a specific use case for
+17:56 put then we have delete method and as
+17:59 the name suggests we use this to delete
+18:02 some kind of resource from the server
+18:04 and one prevalent idea that we have in
+18:07 the context of HTTP methods is the idea
+18:10 of EMP poent and nonm poent and what the
+18:14 idea of important means is these HTTP
+18:18 methods can be called multiple times and
+18:21 we can expect the same kind of result
+18:24 for example we generally consider the
+18:26 methods get or put
+18:30 or
+18:32 delete in the category of it poent
+18:35 methods because just think about it
+18:37 you're trying to fetch some data from
+18:40 the server right it does not matter how
+18:42 many times you fetch it the data should
+18:44 be same you should not be able to modify
+18:46 any kind of data in the server so get is
+18:50 obviously impotent and then we have put
+18:53 because put completely replaces the
+18:54 resource in the server so it does not
+18:56 matter how many times you replace an old
+18:59 with the new data it will the result
+19:02 will be the same right so that is also
+19:04 considered as important then we have
+19:07 delete you can only delete a resource
+19:09 from the server once because after that
+19:11 it is already deleted you cannot perform
+19:14 the action multiple times and expect
+19:16 different results right the result will
+19:17 always be the same the resource can only
+19:20 be deleted once and then we have the
+19:23 idea of nonmutant usually we consider
+19:26 post request to be non important because
+19:31 once you submit a request to create some
+19:33 data let's
+19:35 say uh a user can create a note using
+19:38 your app right they submitted a post
+19:41 request to create a new note and the
+19:44 first time they submit the request the
+19:45 request goes through the response is
+19:47 successful and a new note is created and
+19:50 when they do it a second time we create
+19:53 a new note right there are two different
+19:56 results for the same kind of request so
+19:59 that's why we consider post to be a
+20:01 non-idempotent method because it
+20:04 produces different results for the same
+20:06 kind of request after all the sgtp
+20:08 methods we have one other method which
+20:10 is called the options method and this
+20:12 has a very interesting use case which is
+20:16 used in the course flow right we
+20:18 discussed this before in brief the
+20:22 course flow which is part of the same
+20:25 origin policy which browsers have now
+20:29 options method this method you probably
+20:32 won't use directly as a developer but
+20:34 you will see them once in a while in
+20:36 your browser network tab in pre-flight
+20:38 requests so the options method is used
+20:41 to fetch the capabilities of the server
+20:44 for a cross origin request also known as
+20:48 course which is used because browsers
+20:50 have same origin policy which means by
+20:53 default browsers follow the same origin
+20:56 policy which restricts web pages from
+20:59 making requests to a domain different
+21:02 from theirs different from the one
+21:04 serving the web page and course is a
+21:06 security mechanism enforced by browsers
+21:09 to control how web applications interact
+21:12 with resources hosted on different
+21:15 domains which are cross
+21:17 origin and without course browsers block
+21:21 the request made from a web application
+21:23 running on one origin like example.com
+21:26 to a different origin like API another
+21:29 example.com for security reasons course
+21:32 allows servers to specify who can access
+21:35 their resources and how in a cross
+21:37 origin request there are primarily two
+21:40 types of flows one is a simple request
+21:42 flow and another one is a pre-f flighter
+21:45 request flow first let's look at the
+21:47 simple request imagine our client our
+21:49 frontend is at the Domain example.com
+21:51 and our server is at the Domain api.
+21:54 example.com and we make a get request
+21:57 which looks something like like this
+21:59 this is how the flow looks like the
+22:01 client sends a request the browser
+22:03 automatically adds the origin header to
+22:06 indicate the origin of the request the
+22:08 request uses a simple method which are
+22:10 usually get post or head and then it
+22:13 reaches the server the server checks for
+22:16 the origin header against it C policy if
+22:20 the origin is
+22:21 allowed the server includes the access
+22:24 control allow origin header in the
+22:26 response and it sends the response
+22:29 response the server responds with the
+22:31 resource and includes the necessary
+22:33 course headers for example Access
+22:34 Control allow origin header and this is
+22:37 what the response looks like it has the
+22:39 appropriate course header which the
+22:40 browser looks for while it passes the
+22:43 response it sees that our domain which
+22:45 is the example.com is different from the
+22:48 host domain which is the api. another
+22:50 domain.com and since these two are
+22:53 different the browser checks whether the
+22:56 server's response has this header or not
+22:59 whether it responds with this particular
+23:01 header Access Control allow origin if
+23:04 the server responds with the domain of
+23:06 the client example.com or it could also
+23:10 respond with star which means allow all
+23:12 Origins right if either of those two
+23:15 conditions are true then the browser
+23:18 lets the response go through to the
+23:20 client to whatever the JavaScript client
+23:23 requesting the resource and imagine
+23:25 imagine if the response looked like this
+23:28 the client sent the request the server
+23:30 got the request and assuming the server
+23:32 did not add the corresponding course
+23:35 headers or assuming the server did not
+23:38 allow this particular domain as the
+23:41 client then what the server does it
+23:43 excludes this particular header from the
+23:46 response so the response looks something
+23:48 like this and when the browser finally
+23:51 parses it it sees that it sees the
+23:53 absence of this header and what it does
+23:55 it blocks the this particular response
+23:58 from being passed you will get an error
+24:00 in our console and we will see the error
+24:02 in the network tab as a course error and
+24:06 this is how a simple request flow looks
+24:08 like next we have a pre-lighted request
+24:12 flow for a cross origin request and how
+24:15 does a browser distinguish between a
+24:18 simple request flow and a pre-lighted
+24:20 request flow so these are the three
+24:22 conditions the browser checks before it
+24:25 decides it has to do a PF flight request
+24:28 which basically means it has to do a
+24:30 request before the original request to
+24:33 inquire some stuff to inquire some
+24:35 capabilities and to let the server know
+24:37 about some capabilities right and when
+24:40 does a request qualify as a pre-lighted
+24:43 request one is the method is not get
+24:46 post or head example it is a put request
+24:49 or a delete request and it is a either
+24:52 or situation right it either of these
+24:54 conditions have to be true then it will
+24:56 be considered as a pre-lighted request
+24:58 so the first condition is obviously it
+25:00 has to be cross Surin request which
+25:02 means our domain and the server domain
+25:04 has to be different and the second
+25:07 condition is one of these three and
+25:09 after that it will be a c request and
+25:11 inside that it will be a pre-lighted
+25:13 request so the first condition is it has
+25:16 to be either a put request or a delete
+25:18 request or the request includes some
+25:21 nons simple headers nons simple headers
+25:23 are basically anything apart from our
+25:26 general headers or request headers so
+25:29 one example could be an authorization
+25:30 header or some custom headers right and
+25:33 the third one is or the request has a
+25:38 content type other than application form
+25:41 URL encoded or multiart or text plan
+25:46 these are called General content types
+25:48 or simple content types so if assuming
+25:52 our application our client request the
+25:56 data to be in Json
+25:59 in that case it will be considered as a
+26:01 pre-lighted request and if you are a
+26:03 frontend engineer or a backend engineer
+26:05 you know that mostly we deal with Json
+26:07 data right so most of our requests are
+26:09 considered as a pre-lighted requests
+26:11 these are the three conditions either of
+26:13 them have to be satisfied before we move
+26:16 on before the browser moves on to make a
+26:19 pre-flight request what does a
+26:21 pre-flight request looks like this is
+26:23 when we finally see the use of options
+26:26 method right a pre-flight request is
+26:28 made with an options method and pre-
+26:31 flight request looks something like this
+26:33 it has the method as options it has the
+26:36 appropriate resource URL and the HTTP
+26:39 version it has the host header which is
+26:42 the header of our API the origin the
+26:45 domain of the front end and this header
+26:49 Access Control request method so it is
+26:51 basically asking the server whether this
+26:54 method is supported for this URL or not
+26:57 so it is saying I am making a cross
+26:59 origin request and do you support this
+27:02 put method for this route right and it
+27:06 also asks whether you support this
+27:09 particular header or not if it is needed
+27:11 and the browser sends the options
+27:13 request to the server the request does
+27:15 not include actual data right this does
+27:18 not include any request body or anything
+27:20 it is just a general inquiry to the
+27:23 server about its capabilities and after
+27:27 that if the server is is properly
+27:29 handling course flow if the server
+27:31 supports cross origin requests it
+27:34 responds something like this and if the
+27:37 server does not handle cost request then
+27:40 it won't respond with this and the
+27:42 request will be automatically blocked by
+27:45 the browser and if it does handle it it
+27:47 requests with something like this what
+27:49 it says is this is the status code of
+27:51 the response which means there is no
+27:53 content this is just a general
+27:55 information we use 204 when there is no
+27:57 content then these are the four
+27:60 important headers it responds with the
+28:02 first one is the access control allow
+28:04 origin it says yes I allow the client's
+28:08 domain which is example.com as a cross
+28:11 origin as a valid cross origin request
+28:14 right it can either respond with this or
+28:17 it can respond with a star which
+28:19 basically means I allow all types of
+28:21 clients to make request to me this is
+28:23 the one valid condition it is browser
+28:26 checks it the next is we asked whether
+28:28 you allow put request for this resource
+28:31 or not so the server says yes I allow
+28:34 these two different kinds of methods it
+28:36 is the put method and delete method for
+28:39 this resource for this particular route
+28:42 right and the browser checks it off the
+28:44 next one is we asked whether you allow
+28:46 authorization header and the server says
+28:48 yes I allow authorization header and
+28:49 then it is also checked off and the last
+28:52 one is Access Control maxage what this
+28:55 means is the server says don't make make
+28:58 any more pre-flight request to me right
+29:01 it says these these configs whatever I
+29:04 responded with these will be the same
+29:06 for at least the next 24 hours so you
+29:09 don't have to keep making more
+29:11 pre-flight requests for every route
+29:13 before you send the original request so
+29:15 this saves some bandwidth for both our
+29:18 servers and clients so this is the
+29:20 pre-flight request that the browser
+29:22 makes and the server responds with the
+29:24 appropriate headers the browser checks
+29:26 off all these conditions and then the
+29:29 browser sends the final request which is
+29:31 the original request that the client
+29:32 wanted to make and the server responds
+29:35 according to the original request with
+29:37 whatever the operations are required
+29:39 this is how the typical course flow
+29:41 looks like and now that we understood
+29:44 the theory let let's look at a real demo
+29:46 okay now before we start let me make
+29:49 this clear that we won't be looking at
+29:51 any code because as I said we are
+29:54 learning from first principles and the
+29:57 rule for that is
+29:59 we try to understand the concepts first
+30:01 how the underlying mechanism Works
+30:04 before we dive into code before we
+30:07 understand the how but first we have to
+30:09 understand what for all these demos that
+30:12 we are going to do in this video and and
+30:15 all the other videos in this series we
+30:17 won't be looking at any code it does not
+30:20 matter what language the server is
+30:22 written in what framework it is written
+30:24 in I'll explain what I am changing in
+30:27 the server what I have done in the
+30:29 server for all it matters it can be
+30:30 implemented in any language that's that
+30:33 and this is a tool it's called burp suit
+30:39 and it is used by ethical hackers if you
+30:42 may it has a lot of features as you can
+30:44 see but primarily what we are going to
+30:47 use it for is HTTP intercepting or
+30:50 visualizing HTTP traffic and it offers a
+30:54 quite a nice set of features for that
+30:57 with that what I have here is I have a
+31:00 simple front end app again it could be
+31:03 in any language and what I want to show
+31:06 is one for our course flow one is the
+31:09 simple request and one is the pre-light
+31:12 request and how they look like in actual
+31:15 browser environment so let's fire the
+31:18 first simple
+31:21 request okay so we got this response
+31:23 that we are rendering here and let's
+31:26 inspect the request and response for now
+31:29 right if you go here this is what the
+31:33 request and response looks like right we
+31:35 already took a look at all these
+31:37 components right the method and the URL
+31:39 and all these headers and the response
+31:42 the status code and the response headers
+31:45 the response body so let's focus on the
+31:47 course here what is the first parameter
+31:49 for a request to be considered as a
+31:52 cross origin request by the browser the
+31:54 first thing is the origin so this is our
+31:57 local host file
+31:58 173 and the host right this is our apis
+32:05 which is running on the port 3,000 of
+32:06 Local Host since the host and the origin
+32:10 are running on different ports in Local
+32:15 Host by the browser this is considered
+32:18 as a cross origin request and according
+32:20 to the same origin policy we can only
+32:22 make request from Local Host 5173 to
+32:25 Local Host 5173 right since we not it is
+32:29 considered as a cross origin request the
+32:32 headers to focus here is origin header
+32:34 let me minimize
+32:38 this so the the headers to focus here is
+32:41 the origin header which is our origin
+32:43 the front end origin and the host the
+32:47 domain or the port that you want to
+32:50 connect to which is the apis right for
+32:52 the request these are the two important
+32:54 headers now let's go to the response now
+32:57 the thing to f Focus here is this header
+32:60 right as I had explained the browser
+33:03 makes a cross origin request and when it
+33:05 gets the response it checks whether it
+33:08 has the access control allow origin
+33:10 header or not or whether it has the
+33:13 appropriate port or the domain so it has
+33:17 the front ends Port right the
+33:19 5173 or it could also have star so in
+33:23 that case the browser lets the response
+33:25 through and and it does not block it
+33:28 since according to the core sets this
+33:31 response is now expected right this
+33:34 response is now allowed and now that's
+33:36 why we are able to get the response and
+33:39 now we are able to render it in our
+33:41 front end right let's see what happens
+33:44 if you remove this header like this
+33:46 Access Control allow origin header from
+33:49 the server for a simple request let me
+33:51 just go and make this change okay I have
+33:53 went ahead and made the change in the
+33:56 server now it won't return the appri
+33:58 corer Access Control allow origin Let me
+34:00 refresh
+34:01 this and let's clear this history so
+34:04 that we can focus on the particular
+34:06 request now let's fire the same request
+34:08 again and before we do let's disable
+34:11 caching so that we can see what a new
+34:14 request looks like right so let me fire
+34:17 this the browser blocked this response
+34:19 right it says course error and why let's
+34:23 inspect this request and response so
+34:27 here if you see we have a cross origin
+34:29 request because our origin is 5173 and
+34:33 the host is 3001 and the server does not
+34:37 return an access control allow origin
+34:40 header right because we removed it and
+34:42 for that reason the browser has blocked
+34:44 the request because of course error so
+34:47 this is how the simple request flow
+34:49 looks like and now let's move on to our
+34:51 pre-lighted request right okay I have
+34:54 gone ahead and enabled the course again
+34:56 so that we can test the pre-flight
+34:58 request flow okay let me fire
+35:03 this all right as you can see here the
+35:07 first request that went through was the
+35:09 options request right the pre-flight
+35:11 request and then the original request
+35:14 went through let's look at them one by
+35:15 one how the whole flow looked like okay
+35:18 for the pre-flight request as we have
+35:20 already discussed the method was options
+35:24 and it is a cross origin request because
+35:26 the referrer and the origin are
+35:29 different ports right and for
+35:32 that what the server responded with it
+35:35 responded with status code 204 no
+35:38 content because it is just a general
+35:40 inquiry right pre-flight requests are
+35:43 General inquiries they don't have
+35:45 request bodies or response bodies and
+35:47 the server responded with Access Control
+35:50 allow origin with the front ends domain
+35:53 or Port right this makes the browser
+35:56 allow the response wants to go through
+35:59 that is the first condition and before
+36:01 that let's see why a pre-flight request
+36:04 was fired right why why this was not
+36:06 considered a simple request he
+36:07 investigate the original request what
+36:09 was the conditions it is not a simple
+36:11 method which is get post or head right
+36:15 that is that was one of the conditions
+36:16 so it is already satisfied but let's
+36:18 look at others it also has a
+36:20 authorization header that also counts it
+36:23 out of a simple request right that is
+36:25 the second one and the third one is the
+36:29 content type is application Json and it
+36:32 is sending a Json request body right all
+36:35 the three conditions are satisfied but
+36:37 even if one of them was satisfied it
+36:39 would have still fired a pre-flight
+36:41 request for this let's go back to our
+36:44 options pre-light request analysis the
+36:46 first one was it allowed the client's
+36:50 domain so that the browser lets the
+36:52 response to go through the second
+36:54 one Access Control allowed methods so
+36:58 the server says all these methods get
+37:00 post put delete these methods are
+37:03 allowed for the server it lets the
+37:05 client know the capabilities of the
+37:07 server the third thing is Access Control
+37:09 allowed headers it says these are the
+37:12 two headers which are not simple headers
+37:14 that are supported by the server which
+37:16 is the content type and authorization
+37:20 since the client asked for them if you
+37:23 look at this Access Control request
+37:25 method put the client is asking with the
+37:28 pre-flight request whether the put
+37:30 method is allowed or not and whether the
+37:33 these two headers authorization and
+37:35 content type these two headers are
+37:37 allowed or not so for that the server is
+37:40 responding with these headers it says
+37:43 get post put delete is allowed it also
+37:45 says content type and authorization is
+37:47 also allowed we have also set the max
+37:49 age for the access control to zero for
+37:52 testing purposes right because if you
+37:54 cach this for let's say 5 minutes then
+37:56 pre-flight request be fired that's why
+37:59 this is used for and the content length
+38:01 is zero because there is no content
+38:04 since the pre-flight request was
+38:06 successful it returned 204 it is a
+38:08 success status code the browser let the
+38:11 response go through and it fired the
+38:13 original request it is the put method
+38:16 and this is the original request it has
+38:19 put method the resource URL the origin
+38:22 and the authorization header the host
+38:26 the request body and it responded with a
+38:30 response body right and that's how the
+38:32 pre-flight request flow looks like so
+38:35 the simple request and the pre-flight
+38:37 request flow combined they make the
+38:39 whole course flow and this is all you
+38:42 have to understand how course Works
+38:44 behind the scenes and why these headers
+38:47 are important and how browsers react to
+38:50 them okay moving on the next component
+38:54 that I want to cover is response codes
+38:56 this part this 200 okay what are these
+39:00 and why are they needed HTTP response
+39:03 codes exist to communicate the result of
+39:06 a request in a standardized way know you
+39:08 can just look at the response code and
+39:11 see whether the request was successful
+39:13 or not or what is the state of the
+39:15 server without looking into the body or
+39:18 without judging from the response
+39:20 message that okay so if the request was
+39:23 successful then I would have expected
+39:24 this structure if the request was
+39:26 unsuccessful then I would have expected
+39:28 this structure if the server crashed
+39:30 then I would have expected a null object
+39:33 right we don't have to make those
+39:35 decisions we can judge by these status
+39:38 Cotes so they quickly inform the client
+39:41 whether the request was successful
+39:42 resulted in an error or requires further
+39:45 action they also help clients handle
+39:47 errors by providing specific codes to
+39:49 identify the problem for example
+39:52 unauthorized access will return 401 so
+39:55 now the clients can check whether it is
+39:57 40 one and it can log the user out
+39:60 saying you have to log in again right
+40:02 those kinds of actions they can be
+40:03 judged with response codes or imagine
+40:07 let's say it was a bad request error
+40:09 because of some invalid value through a
+40:11 form submission then the client can ask
+40:14 their user to make changes to their form
+40:17 submission and resubmit right depending
+40:19 on those status code which was like 400
+40:21 also standardization HTTP response codes
+40:24 are standardized across all web services
+40:27 enabling consistency in how servers
+40:30 communicate with different clients
+40:32 regardless of the platform or language
+40:34 used it does not matter whether you are
+40:36 making a server in python or golang or
+40:39 rust or JavaScript or Ruby you have to
+40:42 follow this standard if the request was
+40:44 successful you have to return to 200 if
+40:46 the if you created something you have to
+40:48 return to1 these are the standards and
+40:50 you have to follow them now before HTTP
+40:53 status course clients would have to
+40:55 guess the outcome of a request based on
+40:57 the content of the response as I said
+40:59 leading to inconsistencies and
+41:01 inefficiencies HTTP status code solve
+41:04 this by providing a universal language
+41:06 that all clients and servers understand
+41:08 streamlining interactions and error
+41:10 handling on a high level response codes
+41:12 are three-digit numbers they could
+41:14 either start with 1 2 3 4 or five and
+41:19 depending on the starting digit we
+41:22 categorize them as different level of
+41:25 errors or different types of errors on a
+41:27 high level
+41:28 the digits starting with one are
+41:30 informational responses two are success
+41:33 responses three are redirection five are
+41:36 server errors four are client errors
+41:38 response codes starting with one this
+41:41 code is sent by the server to indicate
+41:42 that it has received the headers and the
+41:44 client can proceed to send the request
+41:47 body and when is it used commonly used
+41:49 in large uploads the client sends the
+41:52 headers first and if the server is okay
+41:54 with the request it sends a 100 Contin
+41:56 so the client can send and the rest of
+41:58 the body also there is which is which is
+42:01 used for switching protocols right we
+42:04 have a use case for that this indicates
+42:06 that the server is switching protocols
+42:08 as requested by the client such as
+42:10 upgrading from HTTP to websocket this is
+42:13 not the mostly used response codes that
+42:15 you will encounter on your day-to-day
+42:17 life so let's focus on these four which
+42:20 you'll see a lot of times especially 2 4
+42:22 and 5 200 series as you know are used
+42:26 for success responses and under that we
+42:29 have three mostly used ones one is
+42:33 200 and
+42:35 2011 and 204 200 is the most common code
+42:39 it indicates that the request was
+42:40 successful and the server is returning
+42:43 the requested resource or performing the
+42:45 requested action for example successful
+42:47 get request where a resource is
+42:49 retrieved
+42:50 2011 it indicates that the request has
+42:53 been fulfilled and resulted in a
+42:55 creation of a new resource for example
+42:57 post request or new form submissions
+42:60 that's where servers use this response
+43:02 to indicate that the a new resource has
+43:05 been
+43:06 created then we have 204 that we just
+43:09 saw in a course flow when we send
+43:12 options request a pre-flight request and
+43:14 the server responds with 204 saying that
+43:17 there is no content but these are the
+43:19 information in the form of headers this
+43:21 also indicates that the request was
+43:23 successful but there is no content we
+43:25 also sometimes use it for delete delete
+43:27 request right the client makes a delete
+43:29 request you delete the particular
+43:31 resource but the server says okay I've
+43:33 deleted it but there is no content to
+43:35 return right you can just assume that
+43:37 the request was successful then we have
+43:40 300 and in 300 the mostly used ones are
+43:44 31
+43:46 302 and
+43:48 304 301 means moved
+43:52 permanently which means the requested
+43:54 resource has been permanently moved to a
+43:57 new UR URL and the future request should
+43:59 use this new URL for example let's say
+44:02 initially you had a route called
+44:05 user and eventually you decided to move
+44:09 that route to slash person so in order
+44:13 to maintain backwards compatibility so
+44:15 that old users or old applications that
+44:19 are still using this route don't break
+44:21 what you do is you add a 301 response
+44:24 for this routes and read direct then to
+44:29 the/ person route so it is a permanent
+44:32 redirect the next one is 302 which means
+44:35 temporary redirect the requested
+44:37 resource is temporarily located at a
+44:39 different URL but the client should
+44:41 continue to use the original URL for
+44:43 future request so when do we use this
+44:45 let's imagine you are running a campaign
+44:47 or something and for those couple of
+44:50 hours you want to redir redirect a
+44:52 particular route to a new route for
+44:55 catching new traffic or showing a
+44:57 different UI or something like that but
+44:60 you don't want to stick to that right
+45:02 you want to revert the changes so you
+45:05 want to say to the client that for for
+45:07 now I'm making a redirect but later on
+45:10 you should use the original route only
+45:12 and then we have
+45:13 34 which says not modified it indicates
+45:17 that the resource has not been modified
+45:19 since the last time the client requested
+45:21 it and this we will see soon in a bit in
+45:25 a uh when we explore our caching demo
+45:28 and when do we use it this is mostly
+45:29 used in conjunction with conditional get
+45:32 request to allow efficient caching right
+45:34 when we are using e tax to let the
+45:36 client know that the uh response is not
+45:39 modified it should use the cached one
+45:41 only instead of downloading the new
+45:42 response so it just says that it is not
+45:45 modified so you should keep using your
+45:47 old response the cach response then we
+45:50 have the 400 series errors and as a
+45:53 backend engineer I think you will mostly
+45:56 deal with these errors because these are
+45:58 the client errors or errors that are
+46:01 triggered because of something some
+46:04 behavior from client so let's see what
+46:06 are the common ones the first one is
+46:11 400 and what this means is it says bad
+46:15 request and when does it Trigger or when
+46:17 should we fire it for example when the
+46:20 client sends invalid data or illogical
+46:23 data or something related to data right
+46:26 for example you are expecting a number
+46:28 and the client sends an array or a
+46:30 string right you are expecting an email
+46:33 but the client sends a phone number
+46:34 something like that it's a bad request
+46:37 that's what it says and you're letting
+46:39 the client know that there is something
+46:41 wrong with your request format so fix it
+46:44 and make a new request the next one is
+46:46 401 which is which means unauthorized
+46:50 when should you fire this when a request
+46:52 requires authentication but the client
+46:54 has either failed to provide valid
+46:56 credentials or is not authenticated at
+46:58 all so let's say you are expecting a JWT
+47:01 token and either if the JWT token has
+47:05 expired or if the client has not send
+47:08 the token in the first place so in those
+47:10 scenarios you want to say that you are
+47:11 unauthorized that's when you respond
+47:13 with this status code 401 next up we
+47:16 have
+47:18 403 and it says forbidden which means
+47:21 the server understood the request but it
+47:24 refuses to authorize and this can happen
+47:27 even if the client is authenticated for
+47:30 example when a user tries to access a
+47:32 resource they don't have permission to
+47:33 access so let's say you are user a and
+47:35 you are trying to delete a resource of
+47:38 user B so that's when the server says
+47:40 you don't have the necessary permissions
+47:42 to perform this action so you are
+47:44 forbidden 403 next up we have 404 and it
+47:48 means not found I think this is the most
+47:50 famous status code 404 this is fired
+47:53 when the client requests a resource that
+47:56 is unavailable
+47:57 either because the URL is incorrect or
+47:60 the resource has been deleted so in
+48:02 those cases the service is 404 it is not
+48:04 found then we have 405 which means
+48:08 method not allowed when does it get
+48:10 fired when an invalid HTTP method is use
+48:13 such as trying to put to a resource that
+48:16 only accepts get or post this often
+48:19 happens because of typos right we are
+48:21 working on front end and instead of
+48:23 doing a put request we do a patch
+48:25 request or instead of doing a post
+48:27 request we do a put request so in those
+48:29 scenarios server says 405 which means
+48:32 method not allowed then we have
+48:35 409 which means conflict this has a
+48:39 number of use cases one of which we can
+48:41 imagine is let's say in your app you are
+48:44 allowing users to create folders right
+48:47 and the condition is the folder names
+48:50 has to be unique they cannot create two
+48:52 folders with the same name when they try
+48:54 to create a new folder when they submit
+48:56 a post request you check whether the
+48:58 folder is already existing or not if it
+49:01 is you can respond with this error 409
+49:04 conflict so the client will understand
+49:07 that a folder with that name already
+49:09 exists and it should try with a new
+49:11 folder name right it means conflict and
+49:15 at last we have 4 to9 which means too
+49:19 many requests and this is mostly used
+49:21 when we are trying to rate limit uh the
+49:24 client's request rate limit basically
+49:26 means if client tries to make too many
+49:29 requests in a particular interval let's
+49:31 say in your server you have configured
+49:34 it to allow at most 60 requests for a
+49:38 client in 1 second and if the client
+49:41 tries to exceed that you can respond
+49:43 with this response code which ISS 429
+49:47 too many requests okay let's move on to
+49:50 the 500 series and we have the most
+49:52 famous one which is the 500 which means
+49:55 internal server error this is often used
+49:58 for unexpected conditions in server
+50:00 something some process broke or some
+50:04 exceptions were raised which were not
+50:06 handled in the server so something
+50:08 unexpected happened at the server so
+50:11 instead of you know just returning a
+50:14 empty response or just breaking or
+50:17 hanging the request we respond with 500
+50:19 internal server errors the client knows
+50:21 that something went wrong with the
+50:22 server then we have 501 which means not
+50:26 implemented for example example when the
+50:27 server does not support the requested
+50:29 HTTP method or functionality but it
+50:33 plans to edit soon so that's when we add
+50:35 a 501 which means currently it is not
+50:38 supported it might be in the future
+50:40 right so we are trying to get that
+50:43 intention through to the client so that
+50:45 it is not implemented yet then we have
+50:49 502 right it means bad gateway we
+50:52 usually see this in Proxes like NX it
+50:55 means when a server acts as a proxy like
+50:58 in a load balance system or reverse
+50:60 proxy and Upstream server returns an
+51:02 invalid response so that's when 52 is
+51:05 returned this is not something we uh
+51:08 return intentionally this is handled
+51:10 mostly by Proxes and load balancers then
+51:12 we have
+51:14 503s which means service unavailable
+51:17 when the service is down when the
+51:19 service is temporarily unable to handle
+51:21 the request such as during high traffic
+51:24 or when it is going maintenance so
+51:26 that's when you return 503 to let the
+51:29 client know that the service is
+51:31 unavailable right now and it should try
+51:33 again later at last we have
+51:37 504 which means gway time out it is
+51:41 similar to 502 but this specifically
+51:44 means that the Upstream server failed to
+51:47 respond within timeout period let's say
+51:49 you have you're using enginex and
+51:52 enginex could not get a response from
+51:54 our original server which is running
+51:56 behind it so that's when ninx responds
+51:58 with 504 Gateway timeout that it did not
+52:01 receive any response from our original
+52:03 server that's why it says timeout okay
+52:05 that's all that's pretty much all the
+52:07 response codes you need to know to work
+52:10 with
+52:11 95% of use cases now in order to
+52:14 solidify our understanding let's look at
+52:17 a quick demo where we look at some of
+52:19 these responses okay now again we have a
+52:22 friend end app for this demo where we
+52:25 are trying to emulate some of the
+52:26 response resp CES and there is a server
+52:28 running which will respond with
+52:30 different status codes right okay so
+52:33 what we'll do is let's just fire all of
+52:35 these requests then we will examine what
+52:38 the responses look
+52:39 like so let me go
+52:42 ahead
+52:44 and
+52:46 okay
+52:48 created this one one
+53:02 all right we have fired all these
+53:03 requests let's go through one by one so
+53:06 as you can see we have all these options
+53:08 request before each original request
+53:10 because because these are cross original
+53:12 requests the browser need to do
+53:14 pre-flight request to support those
+53:16 let's go through all the original
+53:18 requests one by one to see what are the
+53:20 responses looks like okay the first one
+53:22 was 200 okay as I said this is a
+53:25 successful respon
+53:27 which means request was successful right
+53:29 the status code is 200 and the next one
+53:34 is a post request which says 2011 which
+53:37 means created and This Server response
+53:41 even though it is a mock request and a
+53:42 mock response this is what usually it
+53:44 looks like the resource was created
+53:46 successfully and and the status code is
+53:48 2011 then we have 401 bad request says
+53:53 bad request missing required
+53:55 data then we have have then we have 401
+53:59 which means unauthorized which which
+54:01 typically means either you have not
+54:03 included the token the JWT token or the
+54:07 cookie or whatever authentication
+54:09 mechanism you're using whether you are
+54:11 not you have not included that or even
+54:13 if you have it has expired or it is not
+54:16 valid anymore next we have forbidden
+54:20 which means you're trying to perform
+54:22 some action which are not authorized to
+54:24 do right that's why it says 40 through
+54:27 forbidden you do not have access next up
+54:29 we have 404 which means not found and
+54:32 the server says something like not found
+54:34 the requested resource could not be
+54:36 found next we have 409 conflict which is
+54:42 resource already exists so this could
+54:44 happen when as our previous example
+54:46 maybe you already have a folder and
+54:48 you're trying to create a folder with
+54:49 with the same name again so that's why
+54:51 the server says resource already exists
+54:54 right then we have internal server
+54:58 error which is 500 and the server just
+55:02 says internal server error without
+55:03 letting the client know too much of the
+55:05 information for security reasons then we
+55:08 have 503 service unavailable please try
+55:11 again later right that's pretty much
+55:14 covers most of the status Cotes that we
+55:16 have discussed and that we saw in this
+55:19 demo okay moving on let's explore
+55:22 another interesting concept HTTP caching
+55:25 what does http caching mean HTTP caching
+55:28 is a technique to store copies of
+55:30 responses for reuse reducing the need to
+55:32 repeated request to the server this
+55:34 improves load time reduces uh bandwidth
+55:38 and decreases server load right because
+55:40 the client does not need to download a
+55:41 lot of data and the server does not need
+55:43 to send a lot of data if the data is not
+55:45 changed this client can just reuse the
+55:48 old data right that's what caching means
+55:50 reusing the old data if the data is not
+55:52 changed in order to understand this
+55:54 let's just go through a demo instead of
+55:56 of going it theoretically how it looks
+55:59 like practically in a browser
+56:01 environment okay let's go to the request
+56:03 cycle and understand how caching works
+56:06 by following the trail let let me just
+56:09 do a refresh so when we first render the
+56:12 page we are doing a fetch operation so
+56:15 let's start from there okay we fired all
+56:17 these requests and what you want is the
+56:20 last one right because these are just uh
+56:23 JavaScript files and CSS and stuff okay
+56:27 okay what happened in the last request
+56:30 Let's see we did a get request to this
+56:34 endpoint API resource and there is
+56:36 nothing else in the request headers that
+56:38 we should focus on right now right let
+56:41 come let's come to the response what did
+56:43 the server respond with the first
+56:46 important thing is this one cache
+56:48 control what it says is you should
+56:52 maintain the cash for this resource for
+56:55 maximum 10 seconds right this is the
+56:57 first important header the next is e tag
+57:01 e tag is basically a hash so for the
+57:05 sake of this example we are using a
+57:07 random number but eags are usually
+57:10 hashes which are computed from a
+57:13 response for example the server might
+57:15 have taken this response hashed it and
+57:18 sent us that hash in the form of E tag
+57:21 right and we will see what is the use of
+57:23 that in the next request the next
+57:25 important header is last modified with
+57:27 this what the server is trying to say is
+57:30 this is the last time this request was
+57:32 modified and judging from this time and
+57:35 date we can decide whether we should use
+57:37 the old resource the cash resource or
+57:39 request for a new one these are the
+57:41 three important headers that we are
+57:44 going to use for caching okay so that is
+57:47 the initial request and in this request
+57:49 the server responded with a 200 along
+57:53 with the requested resource whatever
+57:55 that is we won't focus on that we are
+57:57 just seeing there is a response body all
+57:59 right what happens when we do a fetch
+58:02 operation for the same resource right
+58:05 let's do a
+58:09 fetch okay what happened here let's look
+58:13 at the response let's focus on the
+58:16 request first we are again doing a get
+58:18 request to this end point and now the
+58:21 headers to focus in the request is this
+58:25 these two headers if none match and if
+58:29 modified since what we are trying to say
+58:31 to the server is if the E tag the hashed
+58:34 version of the response object the E tag
+58:37 of the requested resource is not the
+58:39 same as this one which we have with us
+58:42 in the browser or if the request has
+58:45 been modified after this which means we
+58:47 have the outdated version right we are
+58:50 saying if the eag does not match or if
+58:53 the request has been modified after this
+58:55 then send us a new resource then send us
+58:58 the updated resource otherwise I will
+59:01 just use my cach version which I have
+59:03 with me in the browser cache and to that
+59:05 what server says is it responds with 304
+59:09 not modified and we just talked about
+59:12 different response codes right and 304
+59:15 meant the requested resource has not
+59:17 been modified ever since what the server
+59:19 did was it checked the if none match
+59:22 header which is which is the eag and it
+59:25 also checked the last modified and since
+59:28 the resource matched either the eag or
+59:31 the last modified it send the client a
+59:35 304 response which means the requested
+59:37 resource has not been modified ever
+59:39 since from the last time you fetched it
+59:42 so you can use you can go ahead and use
+59:45 your cast version let's update the
+59:47 resource for now let's clear
+59:50 this and let's fire an update
+59:54 resource okay what what happened here
+59:57 let's explore the first request okay
+60:00 ideally we should have done a patch
+60:02 request or put request but for the sake
+60:05 of this example again we just fired a
+60:08 request a post request okay we updated
+60:10 the resource and the server responded
+60:12 with 200 okay and it also sent us a new
+60:15 e tag right 2943 and after that the
+60:19 client did a new get request in this as
+60:22 you can see the client sent the old dag
+60:26 which which was 3141 our cast version so
+60:29 client did a get request with the old
+60:32 eag and the last modified sense to the
+60:35 server and the server responded with 200
+60:38 instead of 304 because the resource has
+60:41 been modified after that right because
+60:43 we did a update resource request and the
+60:47 server responded with 2943 which is the
+60:50 updated e tag the last modified Etc and
+60:54 let's go ahead again do a fet
+60:60 request okay and what do we have here we
+61:03 are again using the eag that was just
+61:06 provided by the server in this request
+61:09 right this was 200 and the server
+61:12 provided as with a new e tag we are
+61:15 using that e tag and the last modified
+61:17 value and we are doing another get
+61:19 request so the server checked it again
+61:22 and since it is the latest version of
+61:23 the resource it again responded with 304
+61:26 for not modified so this is how you
+61:29 handle caching using the HTTP protocol
+61:32 using different headers in server and
+61:34 client even though in a production
+61:36 setting it gets a lot complicated
+61:38 because the server has to manually
+61:41 Implement and manage all these e tags
+61:43 and if by mistake forgot to update an e
+61:46 tag right then the client will continue
+61:48 to use the cast version with the
+61:51 outdated resource which is not a good
+61:53 idea nowadays we have better Solutions
+61:56 for caching right for example react
+61:58 query which is a complete client side
+62:01 caching so the client has the complete
+62:03 power over when it wants to use a cach
+62:07 resource and when it wants to refetch
+62:10 right at what interval and all these
+62:12 powerful capabilities which is in my
+62:15 opinion a much better solution compared
+62:18 to the traditional HTTP based caching
+62:21 but it is good to know that we have this
+62:24 option if our use cases simple enough
+62:27 then we can go ahead and use HTTP based
+62:29 caching moving on another important
+62:32 topic that usually comes up in client
+62:35 server model in HTTP is content
+62:38 negotiation we already looked at some of
+62:41 these headers for example accept the
+62:44 content type application gson Etc so
+62:48 this is an important topic to understand
+62:50 how clients and servers exchange
+62:52 information about different types and
+62:55 and coding and representation of the
+62:58 content this is basically a mechanism
+63:01 using which client and server agree on
+63:04 the best format to exchange data the
+63:07 client can indicate its preferred format
+63:10 like Json or XML or HTML and the server
+63:13 will try to respond with a compatible
+63:15 format or if not available a fallback
+63:18 format that is the whole idea to look at
+63:21 a high level we have generally three
+63:23 types of content negotiation one is a
+63:25 med type which means the client
+63:27 specifies the desired format through the
+63:30 accept header which is application Json
+63:32 or XML then we have the language
+63:35 negotiation the client requests content
+63:38 in a specific language using the accept
+63:41 language header uh it could be English
+63:43 or Spanish then we have encoding
+63:46 negotiation right the client specifies
+63:49 which encoding it supports using the
+63:51 accept encoding header like gz or
+63:54 deflate and the server responds with
+63:58 that compression format we have a topic
+64:01 which is HTTP compression which is also
+64:03 part of this topic only so we will
+64:05 quickly see that also in the demo that's
+64:07 the whole idea and let's just jump into
+64:09 the demo to understand how it works and
+64:12 again there is a server running which
+64:13 will help us understand different types
+64:15 of content negotiation and this is a
+64:17 frontend client through which we will
+64:20 communicate with our server so let's
+64:22 just try out different types of requests
+64:24 and we'll see how the headers differ and
+64:26 how the responses differ depending on
+64:28 the types of headers the client is
+64:30 sending okay let's first just try the
+64:32 default one which is which is a language
+64:35 is English the format is Json and the
+64:38 preferred encoding is jip so let's do F
+64:41 FD source and this is what the request
+64:44 and response looks like okay so it was a
+64:48 get request to this
+64:50 endpoint and what we said is the
+64:53 language we are saying is English we are
+64:56 sending that information using the
+64:58 accept language header that we prefer
+65:01 the English language then what we are
+65:04 saying is the format is Json right we
+65:06 send that with accept application Json
+65:09 and there is the encoding header right
+65:13 that we are saying accept encoding the
+65:15 browser supports these kinds of
+65:17 encodings right JZ defl VR and zsd so we
+65:21 said we are expecting English and in
+65:24 Json format so this how this is how the
+65:27 server responded it it is sending us a
+65:30 Json
+65:31 and it is in English so let's trve one
+65:35 thing let's make it to Spanish and see
+65:37 how the response
+65:39 differs I made it Spanish and add did
+65:42 another
+65:43 fetch okay so let's see how this differs
+65:47 in this the only thing that changed was
+65:49 instead of accept language English in
+65:51 the header the client said accepted
+65:54 language is Spanish so depending on on
+65:56 that the server was able to update the
+65:58 response so instead of sending it in
+66:00 English since the client prefers Spanish
+66:03 the server responded with Spanish and
+66:06 what if we change the format from Json
+66:08 to XML and we do a
+66:12 Fetch and we look at this what change
+66:15 here we are saying we accepted format is
+66:18 XML and the accepted language is Spanish
+66:21 this is the XML format and the language
+66:24 is Spanish and on a high level this
+66:27 these are the benefits of using content
+66:29 negotiation based headers right the
+66:31 client can let the server know what are
+66:34 its preferences whether it is the data
+66:36 format or the language of the data and
+66:40 depending on that the server can decide
+66:42 to send according to that format it can
+66:45 make the life of the client Easier by
+66:48 sticking to the preferences those are
+66:50 the primarily two type of content
+66:52 negotiations while we are discussing
+66:54 content negotiation there is one
+66:56 interesting topic which falls under the
+66:58 same umbrella which is HTTP based
+67:00 compression it could be either gzip
+67:02 deflate or other formats right so let's
+67:06 look at why do we need compression and
+67:08 how does it work so now what I've done
+67:10 is I've gone ahead and replace the Json
+67:13 response with a very large file file of
+67:16 11,000 entries now let's file the
+67:23 request okay this is the response
+67:26 response and the size is 3.8 M since
+67:29 it's a very large file and let's look
+67:32 how the response looks
+67:36 like this is what it looks like because
+67:38 we are compressing the file on the
+67:40 server side with gzip encoding right
+67:43 here it says content encoding is gzip
+67:46 because the client says it accepts
+67:49 encoding of gzip one of the encoding
+67:52 formats now why do we use it to show
+67:56 that let me just go and disable
+67:58 compression in the server side okay and
+68:01 now that I have disabled the compression
+68:03 let's fire the same request
+68:09 again and as you can see the significant
+68:13 increase in the size it's the same file
+68:16 right it's the same file with 11,000
+68:18 entries and because we are using
+68:20 compression the file size was 3.8 MB and
+68:23 now that we have disabled it the file
+68:26 size becomes 26 M that's a huge increase
+68:29 in size and imagine every client having
+68:33 to download that file it it it caes a
+68:35 lot of based of bandwidth and that is
+68:38 why we need compression so that if the
+68:41 response size is very large we can
+68:43 compress it to a format and on the
+68:46 client side the browser can decompress
+68:49 it and it will get the same response and
+68:52 this is another important topic which we
+68:56 won't really work with it's good to know
+68:58 that it exists behind the scenes in the
+69:01 early days of HTTP specifically HTTP 1.0
+69:04 each request response cycle required a
+69:06 separate connection to the server now
+69:09 this created inefficiencies since
+69:12 establishing and closing TCP connections
+69:14 is resource intensive and slow to
+69:17 address this persistent connections were
+69:19 introduced in HTTP 1.1 now with
+69:22 persistent connections a single TCP
+69:24 connection can be reused for for
+69:26 multiple requests and responses avoiding
+69:29 the overhead of opening and closing a
+69:31 collection for every interaction and for
+69:34 achieving that they introduced this
+69:37 header called keep alive keep alive is
+69:40 the mechanism that enables persistent
+69:43 connections it allows the client and
+69:45 server to reuse the same connection for
+69:47 multiple request responses until one of
+69:50 them decides to close it so what are
+69:52 some key points to remember here in sttp
+69:55 1.1 connections are persistent by
+69:57 default we won't have to do anything
+69:59 explicitly about them meaning they
+70:02 remain open for further requests unless
+70:04 explicitly closed and multiple SB
+70:08 request and responses can be sent over a
+70:10 single connection this reduces latency
+70:12 and saves resources as fewer connection
+70:15 need to be established now the second
+70:17 thing is the keep alive header while
+70:20 persistent connections are default in
+70:22 HTTP 1.1 the connection keep alive
+70:25 header is it's still sometimes used to
+70:27 explicitly ask the server to keep the
+70:29 connection open this header can also
+70:32 include option like how long the
+70:34 connection should remain open with a
+70:36 timeout or how many requests can be sent
+70:39 before the connection is closed with the
+70:41 max value now the third thing is when
+70:44 connection is set to close and when that
+70:47 is specified the connection is closed
+70:49 after the response is sent this is the
+70:51 behavior in HTTP 1.0 by default and it
+70:54 can still explicitly enforced in HTTP
+70:57 1.1 that is some amount of information
+70:59 you just have to understand but you
+71:02 usually won't be working with them the
+71:04 default values work fine one last topic
+71:06 that I want to cover is handling large
+71:09 request and responses how server takes
+71:12 in large request like Files video files
+71:15 image files audio files any kind of file
+71:18 which are very large compared to our
+71:20 typical Json and how client can receive
+71:24 large responses in the same way so let's
+71:27 just jump into the demo and see how it
+71:29 usually works now here we have two
+71:31 examples in one we will see how clients
+71:35 can send large request to the server and
+71:39 in the second one we'll see how servers
+71:41 can send large responses to the client
+71:43 first one is multiart request multiart
+71:46 is usually used for sending large files
+71:49 or any kind of files to the server from
+71:52 the client and the difference between
+71:53 our typical Json request body is in
+71:56 multiart request the file the data of
+71:59 the file the binary data is transferred
+72:02 to the server in Parts in different
+72:05 parts that's why it is called multiart
+72:07 request so let's see how it looks like I
+72:09 have selected a picture and let's click
+72:13 on upload
+72:16 file now let's look at the response of
+72:18 this here is what the request looks like
+72:20 it is a post request and we are
+72:24 specifying a Content length and our
+72:26 content type is multiart form data and
+72:31 this is the important part the boundary
+72:33 and why we need this is since our binary
+72:37 data the binary data of the file is
+72:40 transferred in parts we want to specify
+72:43 what is going to be the delimit what
+72:46 will separate the parts right we need
+72:48 some kind of code that will separate the
+72:50 parts so we are saying this will be our
+72:53 delimiter and if we do a search
+72:59 here we have the delimeter at the start
+73:02 of the binary data and the next
+73:05 occurrence
+73:06 is at the end of it when the all the
+73:09 binary data ends in the request body
+73:12 right that is the use of the boundary
+73:14 parameter and that is how we transfer a
+73:17 large file to the server and the server
+73:20 can read the file responds with the some
+73:23 details of the file in order to say that
+73:25 the upload was successful the idea is
+73:27 whenever we want to transfer large files
+73:30 to the server we should use multiart
+73:32 requests okay now the second thing is
+73:35 receiving large responses from the
+73:38 server for this demo I have used a large
+73:42 text file in the server side and we want
+73:44 to stream the data to the client side in
+73:47 chunks that's what we want to do so
+73:50 let's start the so let's start the
+73:53 request and see how it looks like
+73:56 click on stream
+73:57 data so as you can see this is the first
+74:04 chunk okay so if you go
+74:09 here you can see that we are receiving
+74:12 chunks continuously from the server in
+74:14 different different requests so the
+74:16 request is pretty much a normal request
+74:18 it is a get request let's look at the
+74:20 response what the response looks like
+74:23 these are the three important things
+74:24 that we have to to consider one is
+74:27 content type it is saying that it is not
+74:29 a text content right it is a text event
+74:32 stream which says it will stream the
+74:34 data to the client through different
+74:36 events and the second one is the
+74:38 connection keep alive it says keep the
+74:41 connection alive until all the data is
+74:43 sent and if is here we are still
+74:45 receiving the chunks and we can keep
+74:47 scrolling and scrolling and until the
+74:49 file is completely transferred the
+74:51 server will keep sending the data in
+74:54 chunks and how does it work because of
+74:57 these headers the content type text
+74:59 event stream and the connection keep
+75:00 live right and the client keeps
+75:03 appending all the data that it is
+75:05 receiving from the server and
+75:06 constructing this whole text file and
+75:10 that is how we transfer a large file
+75:13 from a server to the client using chunk
+75:16 transfer or text event stream and the
+75:19 last thing before we end this lesson I
+75:21 just want to give a brief idea about
+75:23 what these terms mean SSL or TLS or
+75:26 https even though we don't explicitly
+75:29 work with them it's good to know what
+75:31 are these SSL was the original protocol
+75:34 for securing Communications between
+75:37 client like a web browser and server it
+75:40 encrypts data so that the sensitive
+75:42 information like passwords or credit
+75:44 card numbers cannot be intercepted by
+75:46 attackers right it was the original
+75:49 encryption mechanism between clients and
+75:51 server now currently SSL is outdated due
+75:55 to some some security vulnerabilities
+75:57 and has been replaced by TLS so this is
+76:01 the modern version of the encryption
+76:03 that client and servers use for data
+76:05 transmission TLS is a modern and more
+76:07 secure version of SSL it encrypts data
+76:10 in transit ensuring that any data sent
+76:13 between the client and server is
+76:15 protected from interception and
+76:17 tampering how it works is TLS uses
+76:20 certificates to authenticate the server
+76:22 and establish an encrypted connection
+76:24 preventing Eve dropping and data bries
+76:26 TLS is continuously updated with newer
+76:28 versions offering better security the
+76:31 current recommended version is TLS 1.
+76:34 and what is https then https is
+76:38 basically HTTP but more secutive
+76:41 features which is which are provided by
+76:44 SSL or TLS initially it was SSL and now
+76:48 it is TLS the underlying mechanism is
+76:51 TLS and https is the one which uses TLS
+76:56 how it works is when you visit a website
+76:59 using
+76:60 https TLS encrypts the communication
+77:03 between your browser and the server this
+77:06 protects sensitive data like login
+77:07 credentials from being intercepted by
+77:09 the attackers and that much information
+77:12 is more than enough on this topic that's
+77:14 all you need to know about TLS and sdps
+77:17 to work on application Level great we
+77:20 talked about a lot of stuff I hope
+77:23 you're able to digest that and I hope
+77:26 you rewatch some of the sections so that
+77:28 you are able to internalize all of them
+77:31 and overally this is all you need to
+77:34 know about HTTP at least of course there
+77:37 are more stuff to read if you want on
+77:39 HTTP or TLS or PCP protocol different
+77:43 different components of HTTP but in
+77:46 order to work on backend systems if you
+77:49 understand this much if you internalize
+77:51 this much and you can visualize the
+77:54 whole flow of all the the components
+77:56 that we talked about today then you're
+77:58 good to go you'll be able to understand
+77:59 all you need to understand and you'll be
+78:01 able to debug most of the stuff now that
+78:04 you understand how the system works
+78:06 behind the scenes and what are the
+78:08 components that come into play in
+78:10 different different flows that's all
+78:12 about http
