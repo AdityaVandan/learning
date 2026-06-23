@@ -1,0 +1,266 @@
+00:00 imagine you are a newly joined software
+00:05 engineer perhaps a front-end developer
+00:07 by trade and you've been asked to fix a
+00:11 bug in the backend code base and what
+00:12 are some challenges you can face
+00:14 probably the back end is written in a
+00:15 language you're unfamiliar with or maybe
+00:17 it's a language you know but the bigger
+00:19 question is where do you even start
+00:22 where do you look for the issue without
+00:23 getting lost in the complexity of the
+00:25 code or let's imagine you've been tasked
+00:27 to create an API from scratch in this
+00:29 situation how how do you form the mental
+00:31 map of the code base stick to the
+00:33 standards and ensure you're not breaking
+00:35 anything one scenario could be you are a
+00:38 backend engineer in typescript or goang
+00:41 and you're suddenly asked to jump into a
+00:43 different language let's say rust or
+00:45 python now how do you get up to speed
+00:47 quickly without wasting hours looking
+00:49 through docks of different libraries
+00:51 let's say fast API or uh pedantic or for
+00:55 rust it's it could be Axiom or any other
+00:58 Library it could be an orm like SQL
+01:00 Alchemy or diesel so the question is how
+01:03 do you apply your existing knowledge in
+01:05 a new environment without Reinventing
+01:08 the wheel now this is where learning
+01:10 back and from first principles becomes
+01:12 invaluable the ability to break down
+01:14 complex systems into their most basic
+01:16 and Universal components gives you a
+01:19 massive Edge like one
+01:22 seeing the big
+01:25 picture right when you enter an existing
+01:28 codebase instead of being overwhelmed by
+01:30 its structure or the complexity of its
+01:32 engineering you can mentally separate
+01:34 out the different parts of the system
+01:36 and work on them in an isolated way
+01:38 you'll be able to identify the core
+01:40 Logic the routing layers the database
+01:42 connections and the over engineered
+01:44 pieces and by filtering out these noises
+01:47 you can start making changes or fixing
+01:49 bugs with confidence and this is
+01:52 something you might have noticed in
+01:53 senior Engineers or ctOS or cosos they
+01:56 can just look at any code or any
+01:59 particular code base and they'll quickly
+02:00 get a fair idea of what's going on or
+02:03 where the buck could be because a human
+02:06 brain is very good at picking up
+02:08 patterns senior Engineers or ctOS they
+02:11 subconsciously pick up these patterns so
+02:13 they don't have to actually use this
+02:14 deliberately but my question is why wait
+02:17 for years of experience you can
+02:19 deliberately practice from day one and
+02:22 get good at this in let's say 6 months
+02:25 or 1 year now the second thing is faster
+02:29 onboarding
+02:32 when you understand the first principles
+02:34 behind backend engineering like how HTTP
+02:37 Works how databases interact with apis
+02:39 or how requests flow through the
+02:41 middleware you can dive into any
+02:43 language or framework and find your way
+02:45 around it you no longer need to spend
+02:47 hours going over Library specific dogs
+02:50 once you have learned the Core Concepts
+02:51 behind authentication or routing or
+02:53 middleware and database interaction the
+02:56 syntax is secondary you'll be able to
+02:58 cut through the noise focusing on the
+02:60 logic instead of the syntax this allows
+03:02 you to develop a deep sense of
+03:04 familiarity with a codeb much faster
+03:06 than if you're focused solely on syntax
+03:09 or language specific features now the
+03:11 third thing is 10x
+03:14 faster in new
+03:18 projects when you start a new project
+03:21 from scratch having backend knowledge
+03:23 grounded in first principles helps you
+03:25 move with Incredible speed and precision
+03:27 you'll be able to create MVPs with
+03:29 production quality code far faster
+03:31 because you'll be working from a deep
+03:33 understanding of the systems needs not
+03:35 just following boiler plate tutorials
+03:37 you'll know how to structure your routes
+03:39 set up database connections and
+03:40 Implement critical functionalities like
+03:42 caching or error handling or logging
+03:44 without constantly referencing
+03:46 documentations and the fourth
+03:49 is
+03:51 syntax
+03:53 fatig learning a new language can be
+03:56 overwhelming enough but if you're unsure
+03:58 of what concepts to learn next after
+04:01 grasping the syntax or if you don't know
+04:03 how to apply that syntax to solve actual
+04:05 problems uh backend engineering problems
+04:08 can lead to frustration or even burnout
+04:10 first principles reduce this syntax
+04:13 fatigue because once you understand the
+04:15 fundamental building blocks switching
+04:16 between languages is no longer a
+04:18 daunting task you know the problems you
+04:20 are solving and now it's just about
+04:21 applying the right syntax and libraries
+04:24 so for example you work as a nodejs
+04:27 developer and you want to transition
+04:29 into a rust backend engineer right so
+04:33 how do you do it you'll obviously look
+04:35 for a complete end to endend project of
+04:38 how to create a back end in Rust uh at
+04:41 least four and 5 hours and it has to
+04:44 also maintain all the production quality
+04:46 standards now the problem with that is
+04:48 rust is a fa in new language and the
+04:52 amount of resources that we have for
+04:54 node the amount of Project based
+04:56 resources that we don't have for rust so
+04:60 how do you get good at it right and you
+05:03 constantly worry about it I'm not
+05:05 finding any projects I'm not finding any
+05:07 good resources you're good at basic
+05:09 syntax right how to handle different
+05:11 types of data structures in Rust and
+05:13 write basic programs but how do you
+05:15 cross that threshold and actually build
+05:17 an end to-end production quality project
+05:19 so this is where the principles come in
+05:21 so imagine you understand the different
+05:23 layers of the back end for example you
+05:25 start from routing and you go to
+05:27 middleware and uh there is database
+05:29 interactions there is logging there is
+05:31 error handling and there is Asing code
+05:34 everything right you understand all the
+05:36 different components clearly as Concepts
+05:38 and in noes so what is the next step you
+05:42 understand basic Syntax for rust right
+05:44 so you start a rust project with
+05:46 whatever project layout that is
+05:48 recommended by the community and you
+05:50 target each component separately you
+05:52 know how a production quality code looks
+05:55 like for routing you know how it looks
+05:57 like for validation and you know how it
+05:59 looks like for data interactions and
+06:01 repository pattern and handlers and
+06:03 authentication authorization you know
+06:05 all the good patterns now you just have
+06:07 to convert your rust based syntax into
+06:09 that pattern let's say you want to
+06:12 tackle validation so you go look up how
+06:15 to do validations in Rust you most
+06:17 probably will find a library or some
+06:20 kind of standard Library pattern of
+06:22 implementing validations now you know
+06:24 the syntax and you already know what are
+06:26 the best practices and patterns and you
+06:29 now you mix them up now you have a
+06:31 module of validation in Rust which is
+06:33 production quality and now you keep
+06:35 repeating this pattern for every single
+06:37 module let's say for authentication and
+06:39 for all your rest API logic and in no
+06:43 time in 2 3 days you'll have a fully
+06:45 fledged production quality codebase in
+06:47 Rust now the next thing is choosing the
+06:49 right tool for the right job and this is
+06:52 something I see Engineers face a lot of
+06:55 problems with every day right because we
+06:58 are stuck with our labels we think we
+07:00 are a nodejs backend developer or we are
+07:02 a ruby backend developer when we Face
+07:05 requirement that we have to build this
+07:06 module which has to have very high
+07:09 concurrency demands right or a very low
+07:12 latency demands so we are stuck with
+07:15 whatever language that we usually work
+07:17 with and the confidence to reach out for
+07:20 the best tool we cannot get hold of that
+07:22 by understanding the core problems back
+07:24 in engineering sols data persistence or
+07:26 request handling security scaling you'll
+07:28 also gain the ability to choose the the
+07:30 right tool for the right job you won't
+07:31 be limited by your framework or your
+07:33 language or your library you'll know
+07:36 exactly which tool to use which language
+07:38 to use and which framework to use you'll
+07:41 understand when it makes sense to use
+07:42 something like redis for caching or
+07:44 postgress for relational data or mongodb
+07:46 for unstructured data or let's say Kafka
+07:49 for realtime even streaming independent
+07:52 of the text tag you're currently working
+07:53 with and the last thing
+07:55 is
+07:57 more employable
+08:02 and this is what most of us want right
+08:04 in today's rapidly changing Tech
+08:06 landscape being able to apply your bag
+08:08 knowledge across languages and
+08:10 Frameworks makes you incredibly
+08:12 versatile and thus more employable
+08:14 employers want Engineers who can think
+08:17 critically independently who can join
+08:19 any team and begin contributing value
+08:21 quickly by mastering backend principles
+08:24 you become that adaptable engineer who
+08:26 is not confined by a specific language
+08:28 or stack but in state has the ability to
+08:30 solve problems in any environment now
+08:33 the good news is that you don't need to
+08:35 wait for years of experience to develop
+08:37 these skills you can start deliberately
+08:39 practicing today by focusing on the Core
+08:42 Concepts that remain the same across
+08:44 every backend system like routing
+08:46 database or authentication you can build
+08:48 your own internal compass for navigating
+08:51 new territories the goal is not just to
+08:53 solve problems when they arise but to do
+08:55 so with confidence and efficiency and
+08:58 with time you will develop a Natural
+08:60 Instinct for approaching any backend
+09:02 code base or project no matter how
+09:04 unfamiliar it may seem at first now
+09:05 learning backend from first principles
+09:07 elevates you from a framework specific
+09:10 developer to a true software engineer
+09:12 one who is not limited by a particular
+09:14 stack or toolet but understands the core
+09:17 problems backend engineering solves this
+09:20 Freedom allows you to explore new
+09:22 languages Frameworks and architectures
+09:24 with ease and positions you as a
+09:26 valuable asset in any engineering team
+09:29 so whether you are a front-end developer
+09:31 looking to expand your skill set or a
+09:33 backend engineer wanting to transition
+09:35 into a new language learning backend
+09:37 from first principles will supercharge
+09:39 your growth and Empower you to build
+09:41 your own robust scalable and
+09:44 maintainable system in any environment
+09:46 so what are these principles anyway and
+09:49 when I say principles I don't mean a
+09:51 list of Rules by first principles I mean
+09:53 some foundational blocks or foundational
+09:56 components around which the rest of the
+09:58 code base revolves at all times no
+09:60 matter how small or how big it is a
+10:02 generic map of the backend engineering
+10:05 territory which helps you find the way
+10:07 and we will start exploring the map from
+10:09 the very next video

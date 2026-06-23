@@ -1,0 +1,464 @@
+00:00 let's picture it back end in its
+00:02 traditional definition is a computer
+00:04 which is listening for HTTP or websocket
+00:07 or grpc or any other kind of request
+00:09 through an open port whether it is 0 or
+00:13 443 which is accessible over the
+00:16 Internet so that clients or other front
+00:20 ends can connect to it send data to it
+00:22 or receive data depending on the kind of
+00:24 request and we call it server because it
+00:28 provides or it serves some kind of
+00:30 content whether it is static files like
+00:32 images or JavaScript files or HTML files
+00:35 or it could be
+00:38 Json and it also accepts data if this
+00:41 client sends something now that is a
+00:44 fair definition of what a back end is
+00:47 and how it works but I want you to get a
+00:49 holistic view to actually see the
+00:51 components physically how they work
+00:53 behind the scenes so let's go through
+00:56 this whole flow now I have a backend
+00:58 server which is deployed in AWS so let's
+01:00 take that as an
+01:03 example
+01:08 demo
+01:14 users and this is some sample data the
+01:16 back end is serving so let's do it one
+01:19 more time and this time open the network
+01:21 toolbar and if we refresh one more time
+01:24 let's disable cache so that we get the
+01:26 appropriate status code all right so
+01:29 this is the request which starts from a
+01:32 browser and reaches our server and we
+01:34 receive this response now we will cover
+01:37 request and response in a later video
+01:38 for now let's look at how the whole flow
+01:41 looks like so let's trace it out let's
+01:43 Trace how our request starts from our
+01:45 browser and reaches our server so the
+01:48 first thing that you can see is the
+01:49 domain name so if you can see it this is
+01:52 the domain name Senus doxyz and this is
+01:57 a subdomain so the first thing that
+01:59 comes to mind is we should take look at
+02:00 our DNS server now this is my DNS server
+02:03 and this part is the important part
+02:06 where we have defined different types of
+02:08 Records now DNS itself is a huge topic
+02:11 so instead of going too deep into that
+02:13 I'll just give the basics here now to
+02:15 oversimplify it DNS has different types
+02:18 of Records you can use a records to
+02:20 point to a particular IP and you can use
+02:22 C Name Records to point to a particular
+02:24 domain name or subdomain right so along
+02:27 with my other existing domains and
+02:30 subdomains the thing to focus here is
+02:33 this part now if you see here we have
+02:35 two a records and one of them is backend
+02:37 demo and it is pointing to a particular
+02:39 IP address and where is this IP address
+02:41 coming from so this IP address is of an
+02:44 E2 instance which is in a s now this is
+02:46 my AWS console let's go to
+02:51 ec2 and then let's go to
+02:54 instances and this is the deployed
+02:56 instance now if you see here this is the
+02:59 public IP address that that we just saw
+03:01 in our DNS config so that particular
+03:04 subdomain which is backend demo points
+03:05 to this IP address and our request
+03:07 reaches here to our ec2 instance through
+03:10 this IP and before it reaches our server
+03:14 or the particular computer it goes
+03:17 through a firewall which is the AWS
+03:19 native firewall the firewall has to
+03:20 allow some kind of request to go through
+03:23 now if you look here this is the
+03:25 security group that is assigned to our
+03:27 AWS instance uh which basically means
+03:30 that using this we can specify what are
+03:33 the ports we want to allow uh what are
+03:36 the ports that we want to be accessible
+03:38 over the internet right so you can see
+03:41 we have allowed three different kinds of
+03:43 ports and we use this port to log into
+03:45 our AWS instance to terminals or command
+03:47 front so that we can do different kinds
+03:50 of operations and the https and HTTP
+03:53 ports now this is the important part our
+03:55 request goes to the domain server which
+03:56 points to our AWS instance IP and
+03:59 through the IP it reaches the instance
+04:00 and before going into the computer it
+04:02 passes through these firewalls so if we
+04:05 don't allow these two ports like 443 for
+04:08 allowing https traffic or 802 allow HTTP
+04:11 traffic if you don't allow it the AWS
+04:14 will block it right here and our request
+04:15 won't be able to reach our server so
+04:18 this is an important part and finally
+04:20 after this our request reaches to our
+04:22 computer now after our request reaches
+04:24 here into our a instance we are using
+04:27 something called a reverse proxy which
+04:30 basically means it is a server which
+04:33 sits in front of other servers so that
+04:36 we can manage different types of
+04:38 redirects or configs from a centralized
+04:41 space instead of changing the configs in
+04:42 every single server so for that we are
+04:44 using enginex and this is how our config
+04:47 looks like there are a lot of stuff here
+04:49 but the parts to focus here is we're
+04:51 using something called sbot to assign
+04:54 SSL certificates automatically but not
+04:56 something to worry about in this demo
+04:58 the parts to focus here is it is
+04:59 listening for Port 80 in our AWS
+05:02 instance and it is
+05:05 redirecting that request to Port 443 so
+05:09 which is an https request so that part
+05:12 is managed by sbot and the part that we
+05:14 have configured is this so what we're
+05:17 saying is this is my domain name so we
+05:19 can Define it using the field server
+05:21 name this is our subdomain back in demo
+05:24 and whatever request that comes to this
+05:28 domain so which is already routed by DNS
+05:30 server so it will reach this instance so
+05:33 that is not something you have to worry
+05:35 about and what we are saying is whatever
+05:37 request that comes to this domain our
+05:39 engx config will redirect those requests
+05:42 to our Local Host 3001 which is the port
+05:44 our server is running on our node server
+05:47 is running on and this is the final
+05:49 redirection so if we take a look at our
+05:52 processes Let's Do
+05:55 pn2 List we are using pn2 to manage our
+05:59 processes
+06:01 so we can see here that we have two
+06:03 processor running one for front end and
+06:06 another for back end and this is a node
+06:08 server so this is the final hop and if
+06:11 you want we can also check this if you
+06:13 just do call Local
+06:17 Host 2001 SL
+06:20 users and we will get the same response
+06:22 so from the point of view of this
+06:25 instance our server our node server is
+06:27 running in Local Host and we using
+06:29 engine and domain names to Route
+06:31 requests to our local server over the
+06:34 Internet so if we were to summarize our
+06:36 request starts here in the browser it
+06:38 goes to our DNS server then that goes to
+06:42 our AWS servers and it goes through a
+06:47 firewall and that reaches our AWS
+06:50 instance right and that request is then
+06:54 reaches
+06:56 ngx and that finally forwards that
+06:59 request to our
+07:01 Local Host 3001 our final server so it
+07:05 goes through all these hops until it
+07:07 finally reaches our server so when we're
+07:09 developing in our Local Host you can
+07:12 just open your browser and go to Local
+07:14 Host 3000 / users and you'll see the
+07:16 same response and we saw that in our AWS
+07:18 instance also if you call to our server
+07:21 we get the same response now you should
+07:23 have a fair idea of how a request looks
+07:26 like and how a request travels over the
+07:29 internet and reaches server but why
+07:31 exactly do we need these backends I'll
+07:34 give an example imagine you're scrolling
+07:37 through your Instagram feed and you come
+07:40 across your friends posts as usually you
+07:43 like them you click on the like button
+07:45 and on the other side your friend gets a
+07:47 notification that you like their post so
+07:49 between you clicking on the like button
+07:51 and your friend getting the notification
+07:53 what exactly happened now that is where
+07:56 the concept of backend comes into play
+07:57 you click on the like button the app
+07:59 send a request to the server the server
+08:01 passes that request and sees who is the
+08:04 user and it finds your name or your ID
+08:07 or whatever and then it persists and
+08:10 save that the data the action of you
+08:13 liking it it has the server has to save
+08:16 it in some kind of way usually in a
+08:18 database it saves that information and
+08:21 then it checks who is the user the user
+08:23 who's post you like and it finds that
+08:26 user's ID and it sends a notification it
+08:29 triggers some kind of action that sends
+08:31 a notification to that user and the user
+08:34 gets a notification in their phone so
+08:35 all these interaction that happened
+08:37 between you clicking on the like button
+08:39 and your friend receiving the
+08:40 notification there has to be some kind
+08:42 of server a centralized computer that
+08:45 has to have all kinds of information
+08:47 about all the users because if you look
+08:50 at your app it is designed it is
+08:52 customized according to your needs and
+08:54 your profile and all the people you
+08:57 follow right and all the actions that
+08:59 you can perform on your account
+09:02 similarly that is the case for your
+09:03 friend they only receive the
+09:05 notification that is intended for them
+09:07 but a server has to have all kinds of
+09:11 information right all kinds of
+09:12 information of all kinds of state so it
+09:15 has to be centralized and from whatever
+09:18 we have seen till now if you try to
+09:21 condense down and if you try to strip it
+09:23 down the responsibility and the use of
+09:26 backend to a single word it will be this
+09:30 data right the need to fetch data the
+09:33 need to receive data and the need to
+09:35 persist data somewhere and any kind of
+09:37 actions and every kind of action that
+09:39 deals with data and if you ask me why
+09:42 not just do everything on the front end
+09:45 right since that is also some kind of
+09:48 device or some kind of computer
+09:50 depending on what you are using so why
+09:52 not do it here why not connect to the
+09:55 database here and why not do every kind
+09:57 of actions that servers do and since
+09:59 everything is distributed everywhere
+10:01 we'll have better performance right
+10:03 technically and that is an excellent
+10:05 question so in order to understand that
+10:08 why can't we use all those
+10:10 functionalities in front end we have to
+10:12 see how front ends actually work behind
+10:14 the scenes now like our earlier backend
+10:16 demo let's do a demo for how front end
+10:19 works from end to end this is a nextjs
+10:21 application that I have deployed in the
+10:22 same aws2 instance open the network
+10:24 toolbar again and let's hit the refresh
+10:33 and what we see here is the first
+10:35 document that the browser fetches we
+10:37 look at this it calls this domain name
+10:41 and if you look at the response it is an
+10:43 HTML file the browser fetches the HTML
+10:46 file and all the resources for example
+10:48 all these JavaScript and all the images
+10:52 the fonts and the CSS files all of those
+10:54 different things are fetched in
+10:56 different different requests after we
+10:58 have our primary HTML file and in our
+10:60 record we see that we have an entry for
+11:02 this subdomain which is front end demo
+11:04 and it points to this particular IP
+11:06 address and if you trace that we land
+11:08 here which is the a E2 instance and we
+11:10 can see that this is the same public IP
+11:12 address next as usual the port 443 and
+11:15 the port 80 has to be allowed for https
+11:18 and HTTP traffic to get through to our
+11:20 server and finally the request land here
+11:22 our ec2 instance and if you look at the
+11:25 engine config this is what it looks like
+11:28 again most of the things are the same
+11:29 same as it was in our backend server we
+11:32 have the same Serb configs but the thing
+11:35 that is different is here we are
+11:38 listening for this domain which is the
+11:40 front end demo and whatever traffic that
+11:42 comes to here we are redirected to the
+11:44 Local Host 3000 instead of redirecting
+11:46 to 3001 we are redirecting to Port 3000
+11:49 and finally the request reaches our
+11:51 frontend nextjs server which serves the
+11:54 files which is the JS file the CSS file
+11:56 and the HTML file which are sent over
+11:59 the network to our browser and after
+12:00 going through all of that after we
+12:02 receive our main HTML file what the
+12:04 browser does is it goes through all
+12:06 these resources the JavaScript files the
+12:08 CSS files and the fonts and it fetches
+12:10 them one by one once it fetches all the
+12:12 CSS which you can see here it paints our
+12:15 window that's how we get all these
+12:17 Styles the background black and these
+12:19 fonts and these button Styles and once
+12:22 the browser fetches all the JavaScript
+12:24 files that's when it hydrates all the
+12:26 event listeners for buttons and all any
+12:28 kind of interactions that we have in
+12:29 this page for example if you click on
+12:32 this button this is what it happens it
+12:33 redirects to another page that happened
+12:35 because the browser fetched all the
+12:36 JavaScript added all the event listeners
+12:38 and that's how the button started
+12:40 working so what do we notice here
+12:43 whatever front end logic that you have
+12:45 written whatever the JavaScript that you
+12:47 have written is all fetched by the
+12:50 browser from our server and it is
+12:54 executed by the browser in our machine
+12:57 in client's machines right so the
+12:59 browser is our runtime compared to our
+13:03 traditional backends which we saw
+13:05 earlier the one in AWS ec2 instance
+13:09 where we sent a request the server
+13:11 processed the request and sent us the
+13:13 result so the actual processing happened
+13:15 on the server right and it is exactly
+13:19 the opposite for front end where it
+13:21 sends us the code but the browser runs
+13:23 the code whatever logic that is run it
+13:25 is run by the browser so that is a key
+13:28 difference to notice here now there are
+13:30 a couple of issues that we find here
+13:32 right because browser run times are
+13:36 often sandbox environments which means
+13:39 they are isolated from our operating
+13:40 systems the processes and the file
+13:43 system everything is an isolated
+13:45 environment which means the code can
+13:48 only access limited amount of resources
+13:50 for example the Dom which is the
+13:52 document object and browser apis for
+13:55 example local storage or cookies and
+13:58 external apis but only if the external
+14:01 API has the all the required amount of
+14:04 headers we have not covered course yet
+14:06 which we will in a future video in much
+14:08 more depth but you can imagine course as
+14:11 a policy a security policy of browsers
+14:14 which restricts JavaScript code to call
+14:17 external apis which is not the same as
+14:19 the current domain for example we have
+14:22 this frontend app in this domain which
+14:23 is frontend demo
+14:25 doxyz so we can only call resources or
+14:29 can only fetch resources and call
+14:31 external apis which are in the same
+14:35 domain if we try to call a different
+14:37 domain then the browser will block the
+14:39 request because of course policy and
+14:42 there are ways to get around that which
+14:44 are through HTTP headers which we will
+14:46 explore later and if you think about it
+14:49 all these sandboxing and security
+14:51 restrictions make sense because
+14:53 essentially what a browser is doing is
+14:55 it is fetching code from a remote server
+14:58 and executing it in the the users
+15:00 browser and if it's not careful enough
+15:03 or isolated enough the remote code can
+15:06 easily access data or files from users's
+15:08 computer which is not a good thing for
+15:10 example imagine you go to a website and
+15:13 you have no idea what is the prent code
+15:15 of that website and if browsers did not
+15:17 isolate environments that code can
+15:20 easily get access to your file system
+15:22 copy all your files your sensitive
+15:24 details and send it to their servers
+15:26 right so that is a very scary idea
+15:29 that's why browsers have all these
+15:30 security policies now coming back to our
+15:32 original question why can't we write
+15:35 backend logic in front end so the first
+15:38 thing obviously is security
+15:41 reasons security
+15:44 reasons because the security policies of
+15:46 browsers are so restrictive and often
+15:49 times a back needs to access underlying
+15:51 file system whether it's to write to a
+15:53 log file or access environment variables
+15:56 and browsers won't allow that that is a
+15:58 huge restrict
+15:60 for a backend server the second thing is
+16:02 you cannot call external apis whenever
+16:05 you want unless that API has all the
+16:08 appropriate cor headers and since we
+16:10 don't have control over all the external
+16:13 apis this is also a big deal breaker
+16:16 because backend servers often need to
+16:19 connect to other servers and fetch data
+16:21 from multiple places so we cannot have
+16:23 this restriction now the third thing is
+16:27 databases
+16:30 now the server runtime has access to all
+16:33 Native database drivers for example PG
+16:35 for postgis and mongodb and that allows
+16:38 it to communicate efficiently with
+16:40 databases these drivers are written to
+16:42 work in environments that can handle
+16:44 socket connections handle binary data
+16:47 and maintain persistent connections
+16:49 things that browsers cannot do and we
+16:51 will explore later how backend servers
+16:53 communicated with databases but to
+16:54 simplify it backend servers maintain a
+16:58 list of connection
+16:59 uh which is often called a connection
+17:01 pool to our database server so that it
+17:04 does not have to create and Destroy
+17:06 connections again and again because
+17:09 backend servers receive thousands and
+17:11 thousands of requests in seconds and if
+17:14 they do the connecting and destroying
+17:16 logic with each request the data server
+17:19 is going to get overwhelmed and it
+17:21 cannot handle that load so drivers are
+17:24 written in a way that can maintain a
+17:27 list of connections and browsers are not
+17:30 designed to maintain persistent
+17:31 connections to databases and even if
+17:33 they were each user would need to open
+17:36 their own delete connection to the
+17:37 database overwhelming the database
+17:39 server with too many connections there
+17:40 is also no easy way to manage connection
+17:42 pooling or efficient query execution
+17:44 from the browser environments now the
+17:46 last thing
+17:48 is computing
+17:51 power front end
+17:54 applications as we use them are
+17:56 everywhere it could be a smartphone it
+17:59 could be be a desktop it could be a
+18:00 laptop and any kind of environments that
+18:03 we can imagine even a computer which has
+18:05 a 256 mbf RAM and with a single core
+18:08 processor and the user might not have
+18:11 enough computing power to perform some
+18:13 heavy business logic and things will
+18:15 start to lag and sometimes break because
+18:18 of the load so for that reason if it's a
+18:21 centralized backend server which serves
+18:24 and CS to a large number of clients we
+18:27 can easily increase its memory and and
+18:29 CPU whenever we want and we can easily
+18:32 deal with the load we can continue this
+18:34 list as long as we want but this should
+18:36 give you a fair idea that keeping
+18:38 backend logic in front end is not a good
+18:40 idea uh that is assuming if we can do it
+18:43 in the first place great now we have
+18:46 seen what a backend is why do we need it
+18:48 and how does it work on a very high
+18:50 level now this is a very good place to
+18:52 be in before we start our journey of
+18:54 learning backend engineering now let's
+18:56 explore what are these principles and
+18:58 why we should learn in this particular
+19:00 way

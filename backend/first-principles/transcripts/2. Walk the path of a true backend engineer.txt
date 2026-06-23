@@ -1,0 +1,91 @@
+00:00 now before we get to the meat of it I
+00:03 want you to know exactly what to expect
+00:05 from these videos and how to learn from
+00:07 them so let's get our expectations
+00:11 clear in this particular playlist which
+00:14 we are currently
+00:15 watching I want to tell everyone the
+00:18 story of backend engineering the
+00:20 philosophies behind it the big questions
+00:22 and the inner workings and the
+00:25 collaborations between different
+00:26 components and
+00:27 machines the narration will help you see
+00:29 the big picture of of a production grade
+00:31 back end and help you appreciate the
+00:34 concepts that are abstracted by the
+00:36 languages run times Frameworks and
+00:39 libraries that we use every day so let's
+00:43 write it down so this playlist is about
+00:47 the story
+00:50 and
+00:53 philosophy right and this is the first
+00:57 step towards being a backend engineer
+00:59 with language agnostic skills right
+01:02 skills which are Beyond Frameworks or or
+01:04 or any particular library that you use
+01:07 and work with every
+01:09 day once you have the foundations clear
+01:12 once you start to see the common
+01:14 patterns behind every backend
+01:15 application and understand the
+01:17 philosophies how the dots connect
+01:19 together now that is the best time to
+01:22 talk about
+01:23 implementations to see how all these
+01:26 principles come together to create a
+01:29 complete backend application
+01:31 and how all of them look and work in
+01:33 actual code so let's write it
+01:37 down
+01:41 impation and this is the point where we
+01:45 have to choose our language our
+01:47 ecosystem and at this point I am
+01:50 planning on releasing two versions one
+01:53 in nodejs and the second one in goang
+01:56 since those are the two languages that I
+01:58 have firsthand experience in that I work
+02:01 with every day now in this phase which
+02:06 will be again another
+02:07 playlist we will pick each principle and
+02:10 deep dive on it in that particular
+02:12 language and the surrounding ecosystem
+02:16 so in a way most videos of this playlist
+02:20 will have an Associated implementation
+02:22 specific video in the next playist right
+02:26 for example in one of the principles we
+02:28 will talk about databases and drivers
+02:29 and migration and all the concepts
+02:31 surrounding databases that backend
+02:33 Engineers deal with day to-day so the
+02:35 nodejs and goang playlist will have an
+02:37 implementation of that where we Deep
+02:40 dive on let's say postgress with the
+02:42 JavaScript driver postgress JS or the
+02:44 goine driver PGX and cover every single
+02:48 concept around
+02:50 that now in the third phase this is
+02:53 where everything comes together all our
+02:56 Concepts all our language specific deep
+02:58 Dives all our philosophies and now here
+03:01 we will build production grade projects
+03:03 from end to end with all the industry
+03:05 standards and best practices we will
+03:07 build quite a few of these projects
+03:09 which you can follow along if you want
+03:11 so let's write it
+03:14 down
+03:17 production
+03:19 level
+03:21 projects right by the end of this
+03:24 journey that is if you decide to take it
+03:27 and if you internalized everything and
+03:29 followed along with all the projects you
+03:31 should be safely able to call yourself a
+03:33 backend engineer and you should be able
+03:36 to go out there and build real systems
+03:39 systems that scale systems that start
+03:42 from zero users and scale to a million
+03:44 users systems that people can maintain
+03:47 over a long period of time so with those
+03:50 expectations let's start
