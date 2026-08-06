@@ -1,0 +1,739 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>[2505.14394] Knowledge Graph Based Repository-Level Code Generation</title><meta property="og:description" content="Recent advancements in Large Language Models (LLMs) have transformed code generation from natural language queries. However, despite their extensive knowledge and ability to produce high-quality code, LLMs often strugg…">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Knowledge Graph Based Repository-Level Code Generation">
+<meta name="twitter:image:src" content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png">
+<meta name="twitter:image:alt" content="ar5iv logo">
+<meta property="og:title" content="Knowledge Graph Based Repository-Level Code Generation">
+<meta property="og:site_name" content="ar5iv">
+<meta property="og:image" content="https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ar5iv.labs.arxiv.org/html/2505.14394">
+<link rel="canonical" target="_blank" href="https://ar5iv.labs.arxiv.org/html/2505.14394">
+
+<!--Generated on Thu Jun  5 15:35:54 2025 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="keywords" lang="en" content="
+Code Retrieval,  Code Generation,  Knowledge Graphs,  Large Language Models
+">
+
+<script>
+  function detectColorScheme(){
+    var theme="light";
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if(current_theme){
+      if(current_theme == "dark"){
+        theme = "dark";
+      } }
+    else if(!window.matchMedia) { return false; }
+    else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark"; }
+    if (theme=="dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light"); } }
+
+  detectColorScheme();
+
+  function toggleColorScheme(){
+    var current_theme = localStorage.getItem("ar5iv_theme");
+    if (current_theme) {
+      if (current_theme == "light") {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+      else {
+        localStorage.setItem("ar5iv_theme", "light"); } }
+    else {
+        localStorage.setItem("ar5iv_theme", "dark"); }
+    detectColorScheme(); }
+</script>
+<link media="all" rel="stylesheet" href="/assets/ar5iv-fonts.0.8.4.css"><link media="all" rel="stylesheet" href="/assets/ar5iv.0.8.5.css"><link media="all" rel="stylesheet" href="/assets/ar5iv-site.0.2.2.css">
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Knowledge Graph Based Repository-Level Code Generation</h1>
+<div class="ltx_authors">
+<span class="ltx_creator ltx_role_author">
+<span class="ltx_personname">
+Mihir Athale1 and Vishal Vaddina2 
+<br class="ltx_break"> 
+<br class="ltx_break"> 
+<br class="ltx_break"> 
+<br class="ltx_break">
+</span><span class="ltx_author_notes">1Work done during an internship at Quantiphi Inc.
+<span class="ltx_contact ltx_role_affiliation">1Computer Science, Northeastern University, Boston, MA, USA 
+<br class="ltx_break">athale.m@northeastern.edu
+</span>
+<span class="ltx_contact ltx_role_affiliation">2Applied Research, Quantiphi Inc., Toronto, ON, Canada 
+<br class="ltx_break">vishal.vaddina@quantiphi.com
+</span></span></span>
+</div>
+
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p">Recent advancements in Large Language Models (LLMs) have transformed code generation from natural language queries. However, despite their extensive knowledge and ability to produce high-quality code, LLMs often struggle with contextual accuracy, particularly in evolving codebases. Current code search and retrieval methods frequently lack robustness in both the quality and contextual relevance of retrieved results, leading to suboptimal code generation. This paper introduces a novel knowledge graph-based approach to improve code search and retrieval leading to better quality of code generation in the context of repository-level tasks. The proposed approach represents code repositories as graphs, capturing structural and relational information for enhanced context-aware code generation. Our framework employs a hybrid approach for code retrieval to improve contextual relevance, track inter-file modular dependencies, generate more robust code and ensure consistency with the existing codebase. We benchmark the proposed approach on the Evolutionary Code Benchmark (EvoCodeBench) dataset, a repository-level code generation benchmark, and demonstrate that our method significantly outperforms the baseline approach. These findings suggest that knowledge graph based code generation could advance robust, context-sensitive coding assistance tools.</p>
+</div>
+<div class="ltx_keywords">
+<h6 class="ltx_title ltx_title_keywords">Index Terms: </h6>
+Code Retrieval, Code Generation, Knowledge Graphs, Large Language Models
+
+</div>
+<section id="S1" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">I </span><span class="ltx_text ltx_font_smallcaps">Introduction</span>
+</h2>
+
+<div id="S1.p1" class="ltx_para">
+<p class="ltx_p">The landscape of software development has fundamentally transformed with the emergence of large language models (LLMs) such as GPT-4<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib1" title="" class="ltx_ref">1</a>]</cite> and Claude-3.5-Sonnet, which demonstrate remarkable capabilities in translating natural language requirements into functional code. These models, trained on vast repositories of code and documentation, achieve unprecedented performance on standardized benchmarks like HumanEval<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib2" title="" class="ltx_ref">2</a>]</cite>, showcasing their ability to generate syntactically correct and functionally appropriate code across diverse programming tasks. This advancement represents a significant milestone in automated programming assistance, promising to accelerate software development cycles and reduce the cognitive load on developers.</p>
+</div>
+<div id="S1.p2" class="ltx_para">
+<p class="ltx_p">The integration of LLMs into software development workflows has seen widespread adoption through interfaces like ChatGPT, Claude AI, and various copilot tools<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib3" title="" class="ltx_ref">3</a>]</cite>. This adoption is driven by their ease of use, extensive knowledge base, and versatility in handling diverse coding tasks. The high-volume adoption demonstrates AI’s positive impact on developer productivity, particularly in day-to-day development tasks.</p>
+</div>
+<div id="S1.p3" class="ltx_para">
+<p class="ltx_p">However, several critical limitations emerge in professional software development environments. LLMs often generate code in isolation, lacking an understanding of project-specific architectural patterns<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib4" title="" class="ltx_ref">4</a>]</cite> and internal dependencies. This contextual disconnect leads to significant time investment in adapting generated code to project requirements. Additionally, LLMs frequently produce redundant code<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib5" title="" class="ltx_ref">5</a>]</cite>, duplicating existing functionality and increasing maintenance complexity. Code style inconsistency presents another challenge, as LLMs generate code with varying styles<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib6" title="" class="ltx_ref">6</a>]</cite>, often misaligned with project-specific conventions.</p>
+</div>
+<div id="S1.p4" class="ltx_para">
+<p class="ltx_p">Current mitigation approaches primarily rely on enhancing code retrieval through web searches, documentation analysis, and pattern matching<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib7" title="" class="ltx_ref">7</a>]</cite><cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib8" title="" class="ltx_ref">8</a>]</cite>. While Retrieval Augmented Generation (RAG)<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib9" title="" class="ltx_ref">9</a>]</cite> systems show promise, traditional retrieval methods struggle with complex scenarios involving multiple interacting components. Recent agentic workflows<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib10" title="" class="ltx_ref">10</a>]</cite><cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib11" title="" class="ltx_ref">11</a>]</cite> attempting iterative refinement face challenges in computational overhead and potential unproductive iteration loops.</p>
+</div>
+<figure id="S1.F1" class="ltx_figure"><img src="/html/2505.14394/assets/x1.png" id="S1.F1.g1" class="ltx_graphics ltx_centering ltx_img_landscape" width="598" height="414" alt="Refer to caption">
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>Three-step approach to code generation using knowledge graphs: (1) Knowledge Graph Creation: Transform the code repository into a knowledge graph, capturing connections among elements like classes, functions, etc. (2) Graph-based Code Retrieval: Create an index(knowledge base) for retrieving relevant sub-graph based on user queries, utilizes a hybrid search system (3) Code Generation with LLM: Employ a Large Language Model (LLM) to generate code, based on the retrieved sub-graph provided as context to the LLM.</figcaption>
+</figure>
+<div id="S1.p5" class="ltx_para">
+<p class="ltx_p">To address the aforementioned technical challenges in repository-level code generation, we propose a novel knowledge graph-based framework designed to enhance and improve code retrieval thereby improving the quality of code generation with LLMs. Our approach introduces a retrieval system capable of capturing complex dependencies and usage patterns in real-world code repositories while considering the semantic context necessary for effective downstream tasks such as code generation. We focus on adopting a hybrid approach to information retrieval on code bases. Our approach leverages a knowledge graph to represent code structures—capturing the hierarchical organization, dependencies, and usage relationships among code components like classes, functions, and modules. This structure enables context-rich interlinked searches and retrievals that support more accurate and contextually aware code generation. This relational and usage-based contextual representation of code as context to the LLM helps generate less error-prone and more functionally correct code while leveraging existing code to minimize duplication.</p>
+</div>
+<div id="S1.p6" class="ltx_para">
+<p class="ltx_p">Our framework offers several technical advantages over existing approaches. By indexing code components and their relationships, the knowledge graph ensures consistent alignment of generated code with the project’s structure and requirements. Furthermore, semantic search on code documentation — enhanced by functionally relevant LLM-generated descriptions — improves retrieval accuracy by accommodating more complex user queries. This capability allows for retrieving highly relevant context that considers functional and structural similarities, resulting in efficient reuse of code snippets and improved integration with existing codebases.</p>
+</div>
+<div id="S1.p7" class="ltx_para">
+<p class="ltx_p">By capturing the usage of code components such as functions and classes while providing relational information alongside code snippets to the LLM, we implicitly reflect the coding style prevalent within a specific repository context. As a result, we can generate consistently styled code for every user query, significantly reducing the manual effort required to align generated outputs.</p>
+</div>
+<div id="S1.p8" class="ltx_para">
+<p class="ltx_p">In subsequent sections, we present a comprehensive analysis of our methodology, which includes knowledge graph construction for code representation, a hybrid retrieval system that combines full-text semantic searches with graph-based queries, and integration of these systems with LLMs for contextually enhanced code generation. We demonstrate our framework’s effectiveness by evaluating our framework on the EvoCodeBench<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib12" title="" class="ltx_ref">12</a>]</cite> dataset. We conclude by discussing the broader implications of our approach for AI-enhanced software development and outlining directions for future research in this area.</p>
+</div>
+</section>
+<section id="S2" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">II </span><span class="ltx_text ltx_font_smallcaps">Background and Related Work</span>
+</h2>
+
+<div id="S2.p1" class="ltx_para">
+<p class="ltx_p">This section reviews key developments in LLM-based code generation, contextual code generation techniques, the application of knowledge graphs within software engineering, and iterative refinement methods. Furthermore, we discuss the limitations of current methodologies, highlighting how our proposed knowledge graph-based approach addresses these gaps by enhancing contextual understanding, dependency management, and consistency in style.</p>
+</div>
+<div id="S2.p2" class="ltx_para">
+<p class="ltx_p">Large language models have revolutionized natural language processing tasks <cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib13" title="" class="ltx_ref">13</a>]</cite><cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib14" title="" class="ltx_ref">14</a>]</cite><cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib1" title="" class="ltx_ref">1</a>]</cite>, extending their capabilities to generating code from human language descriptions<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib15" title="" class="ltx_ref">15</a>]</cite>. Seminal works, such as the introduction of Codex by Chen et al. <cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib2" title="" class="ltx_ref">2</a>]</cite>, a model fine-tuned on a large corpus of GitHub code, showcase the potential of LLMs in translating natural language prompts into functional code. Codex laid the foundation for tools like GitHub Copilot <cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib2" title="" class="ltx_ref">2</a>]</cite>, which assists developers by providing code suggestions based on natural language inputs. These models have been evaluated through benchmarks such as HumanEval <cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib2" title="" class="ltx_ref">2</a>]</cite>, which measures the ability of LLMs to generate functional code for various programming tasks, demonstrating substantial proficiency across programming languages and paradigms. However, these evaluations primarily focus on isolated code generation tasks rather than integration within existing complex codebases, limiting their practical application in real-world software development.</p>
+</div>
+<div id="S2.p3" class="ltx_para">
+<p class="ltx_p">Recent research has emphasized integrating contextual information into the code generation process to address the limitations of context-free code generation. There has been a particular focus on repository-level code generation tasks<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib16" title="" class="ltx_ref">16</a>]</cite>that resemble real-world software development practices. For instance, RepoCoder<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib17" title="" class="ltx_ref">17</a>]</cite> proposed a novel method for code generation by utilising a similarity-based retriever and a pre-trained language model for code completion. This framework aimed to extend the code context across different files in the repository by leveraging the similarity between the code to be completed and the existing code for retrieval. However, the retrieval system heavily relies on the amount of similar code in the repository for better retrieval. RepoFusion<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib18" title="" class="ltx_ref">18</a>]</cite> proposes a framework that improves predictions by retrieving multiple contexts within a repository, rather than relying solely on the immediate surrounding code. Using the Fusion-in-Decoder (FiD)<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib19" title="" class="ltx_ref">19</a>]</cite> architecture, it combines relevant repository contexts obtained through methods like prompt proposals and BM25<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib20" title="" class="ltx_ref">20</a>]</cite> scoring. While this improves the accuracy, RepoFusion faces challenges in computational scalability, limiting its deployment in resource-intensive settings.</p>
+</div>
+<div id="S2.p4" class="ltx_para">
+<p class="ltx_p">In real-world settings with evolving codebases, retrieval has become a very critical aspect of improving LLM performance on code generation tasks. Research conducted by Wang et. al.<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib21" title="" class="ltx_ref">21</a>]</cite> evaluates multiple retrieval and generation models on a curated dataset and shows that retrieval can significantly boost code generation performance. However, they also note that this approach works well for basic programming problems and weaker models. Furthermore, they highlight that retrieval models often struggle to find relevant documentation based on code, diminishing the actual power of retrieval.</p>
+</div>
+<div id="S2.p5" class="ltx_para">
+<p class="ltx_p">Recent research has introduced agentic workflows<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib22" title="" class="ltx_ref">22</a>]</cite><cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib23" title="" class="ltx_ref">23</a>]</cite> that leverage iterative refinement cycles to address some inherent limitations to single-pass code generation. AgentCoder<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib24" title="" class="ltx_ref">24</a>]</cite>, a multi-agent framework, proposes using multiple agents with different roles to enhance code generation through effective test generation and optimization. This multi-agent system aims to reduce bias by separating code generation from testing, improving code quality and efficiency. Although powerful in generating high-quality code, multiple agents increase complexity due to coordination challenges and add overhead due to iterative refinement.</p>
+</div>
+<div id="S2.p6" class="ltx_para">
+<p class="ltx_p">Knowledge graphs have emerged as powerful tools for representing complex relational information across various domains, including software engineering. GraphCoder<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib25" title="" class="ltx_ref">25</a>]</cite> proposes using graphs to incorporate repository-specific knowledge to aid LLMs in code completion. It employs Code Context Graphs(CCG), which model the flow and structural relationships between code statements. During inference, the system retrieves parts of CCG to provide LLMs with better context related to the repository. However, CCGs may not adequately represent modular components of the codebase and can miss use cases requiring a semantic understanding of the knowledge base. Similarly aligned with our proposed approach, CodeXGraph<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib26" title="" class="ltx_ref">26</a>]</cite> utilizes a knowledge graph to bridge the gap between LLMs and code repositories. It converts the repository to a knowledge graph based on a defined schema. The retrieval relies on an LLM to convert natural language questions into graph queries for retrieving relevant nodes as context for the LLM. While this method performs well for simple user queries that are easily convertible into graph queries, it struggles with complex queries requiring functional and semantic information for retrieval.</p>
+</div>
+<div id="S2.p7" class="ltx_para">
+<p class="ltx_p">Despite significant strides made in code generation, retrieval, and structured knowledge representation, there remains a critical gap in integrating these approaches to address the challenges of real-world software development. Current methods lack a robust mechanism for incorporating repository-level context, managing complex dependencies, and maintaining project-specific coding standards. Our proposed knowledge graph-based framework aims to bridge this gap by representing the information within code repositories in a structured and systematic knowledge graph form. We propose using a hybrid retrieval mechanism that combines semantic, lexical, and graph-based searches to retrieve highly relevant code context in the form of sub-graphs. This enables more contextually accurate and dependency-aware code generation. By capturing key aspects such as architectural patterns, component dependencies, versioning constraints, API usage, and coding conventions, our approach provides a semantic framework that aligns generated code with existing project requirements. This reduces the need for post-generation adjustments while ensuring consistency in code style and functionality.</p>
+</div>
+<div id="S2.p8" class="ltx_para">
+<p class="ltx_p">This comprehensive knowledge graph-based method contributes a novel solution to the landscape of automated code generation, addressing practical integration challenges and facilitating a more robust and context-aware development workflow. The following sections detail our methodology and system architecture, experimental results, and comparative analysis - positioning our approach as a significant advancement in the field of code retrieval and generation.</p>
+</div>
+</section>
+<section id="S3" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">III </span><span class="ltx_text ltx_font_smallcaps">Methodology</span>
+</h2>
+
+<div id="S3.p1" class="ltx_para">
+<p class="ltx_p">In this section, we outline our methodology for repository-level code generation. This approach is designed to enhance the contextual accuracy, integration, and relevance of generated code by grounding it within an existing codebase’s structure, dependencies, and coding standards. Our methodology is organized into three main stages as shown in Fig. <a href="#S1.F1" title="Figure 1 ‣ I Introduction ‣ Knowledge Graph Based Repository-Level Code Generation" class="ltx_ref"><span class="ltx_text ltx_ref_tag">1</span></a>: First, constructing a comprehensive knowledge graph to represent the repository’s entities and relationships; Second, retrieving relevant code components based on a graph traversal guided by semantic relevance; and Third, using a large language model (LLM) to generate code that adheres to the repository’s architectural and stylistic constraints. Together, these stages provide a cohesive pipeline for producing high-quality, contextually appropriate code that aligns with the intricacies of the target repository. We visualize all the steps involved in our methodology in Fig. <a href="#S3.F2" title="Figure 2 ‣ III Methodology ‣ Knowledge Graph Based Repository-Level Code Generation" class="ltx_ref"><span class="ltx_text ltx_ref_tag">2</span></a>.</p>
+</div>
+<figure id="S3.F2" class="ltx_figure"><img src="/html/2505.14394/assets/x2.png" id="S3.F2.g1" class="ltx_graphics ltx_centering ltx_img_landscape" width="598" height="303" alt="Refer to caption">
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>A diagrammatic representation of our end-to-end framework. We describe the steps in detail in the Methodology (<a href="#S3" title="III Methodology ‣ Knowledge Graph Based Repository-Level Code Generation" class="ltx_ref"><span class="ltx_text ltx_ref_tag">III</span></a>) section.</figcaption>
+</figure>
+<section id="S3.SS1" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">III-A </span><span class="ltx_text ltx_font_bold">Knowledge Graph Construction</span>
+</h3>
+
+<div id="S3.SS1.p1" class="ltx_para">
+<p class="ltx_p">In this section, we detail the process of transforming a Python code repository into an interconnected knowledge graph, which serves as the foundation for our hybrid retrieval system that retrieves relevant code snippets based on user queries.</p>
+</div>
+<div id="S3.SS1.p2" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Parsing and Element Extraction</span>:
+The initial step in our pipeline involves parsing each code file in the repository. To do this we use the Abstract Syntax Trees (ASTs). This systematic approach allows us to identify core elements, including <span class="ltx_text ltx_font_italic">Classes</span> (<math id="S3.SS1.p2.m1" class="ltx_Math" alttext="C_{i}" display="inline"><semantics><msub><mi>C</mi><mi>i</mi></msub><annotation encoding="application/x-tex">C_{i}</annotation></semantics></math>), <span class="ltx_text ltx_font_italic">Methods</span> (<math id="S3.SS1.p2.m2" class="ltx_Math" alttext="M_{i}" display="inline"><semantics><msub><mi>M</mi><mi>i</mi></msub><annotation encoding="application/x-tex">M_{i}</annotation></semantics></math>), <span class="ltx_text ltx_font_italic">Functions</span> (<math id="S3.SS1.p2.m3" class="ltx_Math" alttext="F_{i}" display="inline"><semantics><msub><mi>F</mi><mi>i</mi></msub><annotation encoding="application/x-tex">F_{i}</annotation></semantics></math>), <span class="ltx_text ltx_font_italic">Attributes</span> (<math id="S3.SS1.p2.m4" class="ltx_Math" alttext="A_{i}" display="inline"><semantics><msub><mi>A</mi><mi>i</mi></msub><annotation encoding="application/x-tex">A_{i}</annotation></semantics></math>), as well as other variables and dependencies.
+From the elements identified by AST, we extract the essential elements that will be included in our knowledge graph. For each file, we define a set E= {<math id="S3.SS1.p2.m5" class="ltx_Math" alttext="C_{i}" display="inline"><semantics><msub><mi>C</mi><mi>i</mi></msub><annotation encoding="application/x-tex">C_{i}</annotation></semantics></math>, <math id="S3.SS1.p2.m6" class="ltx_Math" alttext="M_{i}" display="inline"><semantics><msub><mi>M</mi><mi>i</mi></msub><annotation encoding="application/x-tex">M_{i}</annotation></semantics></math>, <math id="S3.SS1.p2.m7" class="ltx_Math" alttext="F_{i}" display="inline"><semantics><msub><mi>F</mi><mi>i</mi></msub><annotation encoding="application/x-tex">F_{i}</annotation></semantics></math>, <math id="S3.SS1.p2.m8" class="ltx_Math" alttext="A_{i}" display="inline"><semantics><msub><mi>A</mi><mi>i</mi></msub><annotation encoding="application/x-tex">A_{i}</annotation></semantics></math>, …} that represents the extracted elements of the code base.</p>
+</div>
+<div id="S3.SS1.p3" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Schema Definition</span>:
+To provide and maintain the structure of the knowledge graph, we define the node types and relation types in a graph schema(sample shown in Fig. <a href="#S3.F3" title="Figure 3 ‣ III-A Knowledge Graph Construction ‣ III Methodology ‣ Knowledge Graph Based Repository-Level Code Generation" class="ltx_ref"><span class="ltx_text ltx_ref_tag">3</span></a>). Nodes represent distinct entities and relationships capture the interactions between these nodes. We can define the high-level schema as follows:
+The set of node types is defined as V= {File, Class, Method, Function, Attribute, Generated Description}
+and relations defined as R= {defines class, defines a function, has a method, used in, has an attribute, has description}. This modular schema is designed to be adaptable to various programming languages and repository types, allowing for customization based on specific requirements.</p>
+</div>
+<div id="S3.SS1.p4" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Additional Metadata</span>:
+In addition to the core elements, we extract documentation and comments from the code files. These are stored as additional nodes in our knowledge graph, incorporating information such as code documentation and comments. Additionally, we use an LLM to generate descriptions for code snippets to capture functional meaning and context from the code in the repository, we store these descriptions as LLM-generated descriptions in the knowledge graph. Incorporating metadata enhances the contextual depth of the knowledge graph, making it more informative and effective for retrieval tasks.</p>
+</div>
+<div id="S3.SS1.p5" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Data Ingestion and Indexing in Neo4j</span>:
+After successfully extracting and structuring the data according to the schema, we ingest this data into a Neo4j graph database. Once the data is in Neo4j, we create various indexes to optimize search operations. We utilize Neo4j’s built-in capabilities to set up the following indexes:</p>
+</div>
+<div id="S3.SS1.p6" class="ltx_para">
+<ul id="S3.I1" class="ltx_itemize">
+<li id="S3.I1.i1" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span> 
+<div id="S3.I1.i1.p1" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Full-text Indexes</span>: Function Names, Class Names, Method Names, Modules</p>
+</div>
+</li>
+<li id="S3.I1.i2" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span> 
+<div id="S3.I1.i2.p1" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Vector Indexes</span>: Documentation, LLM-Generated Descriptions</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="S3.SS1.p7" class="ltx_para">
+<p class="ltx_p">We employ an encoder model (all-Mini-LM V6<cite class="ltx_cite ltx_citemacro_cite">[<a href="#bib.bib27" title="" class="ltx_ref">27</a>]</cite>) to generate embeddings for the documentation and description data. These embeddings are then ingested into Neo4j’s vector database to create the search index.</p>
+</div>
+<div id="S3.SS1.p8" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Hybrid Retrieval Support</span>:
+The full-text and vector indexes we create facilitate hybrid search capabilities, allowing for rapid retrieval based on structural elements as well as context-based retrieval through semantic search on the documentation and descriptions stored within the knowledge graph. This integrated approach enhances the overall efficiency and effectiveness of our retrieval system.</p>
+</div>
+<figure id="S3.F3" class="ltx_figure"><img src="/html/2505.14394/assets/x3.png" id="S3.F3.g1" class="ltx_graphics ltx_centering ltx_img_landscape" width="598" height="463" alt="Refer to caption">
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 3: </span>A sample schema that defines the node types and relations between them. Every node in the knowledge graph will be one of these types linked by relevant relation to another node.</figcaption>
+</figure>
+</section>
+<section id="S3.SS2" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">III-B </span><span class="ltx_text ltx_font_bold">Hybrid Code Retrieval</span>
+</h3>
+
+<div id="S3.SS2.p1" class="ltx_para">
+<p class="ltx_p">Following knowledge graph construction, the next phase, <span class="ltx_text ltx_font_italic">Hybrid Code Retrieval</span>, focuses on identifying relevant code segments in response to user queries. We design our retrieval system to leverage the power of syntactic, semantic and graph queries. We utilize the following approach for code retrieval.</p>
+</div>
+<div id="S3.SS2.p2" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Query Processing</span>: The system is designed to enable the user to enter a query in natural language. To process the query entered by the user we take two approaches. First, we use an LLM to identify specific entities if mentioned in the query. We take the query and pass it to an LLM along with the graph data schema and prompt it to identify elements from the user query that align with our schema elements. Second, we use the same encoder model used to generate embeddings for metadata to generate an embedding for the user query.</p>
+</div>
+<div id="S3.SS2.p3" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Initial Retrieval</span>: Once we have the identified entities and the query embedding we perform an initial search over the knowledge graph. We perform a full-text search for the LLM-identified entities over the full-text indexes to retrieve the matching nodes from the knowledge graph. We also perform a similarity search over the vector indexes to find semantically relevant nodes to the user query. We reverse map these nodes(description and documentation) to the nodes they describe to get the functions, classes, methods etc. We limit the number of nodes to top-k for each search based on a score threshold so that we get a quality set of initially retrieved nodes.</p>
+</div>
+<div id="S3.SS2.p4" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Expanding and Enriching Initial Set</span>: To enrich the initial search results, we perform a graph traversal to expand the initial nodes into a relevant sub-graph, capturing additional context around the initial matches. The depth and breadth of this traversal are governed by a hyper-parameter defining the number of hops from the starting nodes, which adjusts the extent of exploration around the query’s focal nodes. For each of the nodes in the initial subset, we do a n-hop traversal to find the dependencies and usages associated with that particular node. We call this expanded graph an n-hop sub-graph.</p>
+</div>
+<div id="S3.SS2.p5" class="ltx_para">
+<p class="ltx_p"><span class="ltx_text ltx_font_bold">Filtering Sub-graph</span>:
+The resulting sub-graph encompasses not only the initially matched nodes but also interconnected entities, such as related functions, classes, and imports, forming a contextual framework around the core query elements. We refine this sub-graph further through semantic ranking, prioritizing nodes that align most closely with the query’s purpose while filtering out less relevant nodes. We generate embeddings for each of the nodes in the retrieved sub-graph and based on the similarity with the original query’s embedding, we filter the sub-graph by keeping top-k nodes. This pruning process is essential to streamline the sub-graph, ensuring that only contextually pertinent information is passed to the LLM. This improves both computational efficiency and the model’s ability to generate contextually relevant code.</p>
+</div>
+</section>
+<section id="S3.SS3" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">III-C </span><span class="ltx_text ltx_font_bold">Code Generation with LLM</span>
+</h3>
+
+<div id="S3.SS3.p1" class="ltx_para">
+<p class="ltx_p">In the final stage of code generation, the refined sub-graph is provided as context to the LLM for code generation along with the user’s initial query. The sub-graph encapsulates not only individual code snippets but also the structural and relational context surrounding these snippets in the form of the relationships between the nodes in the knowledge graph. This provides the LLM with a detailed view of the repository’s architecture, dependencies, and coding conventions, all in relevance to the user’s query.
+We write a custom prompt to guide the LLM, which includes instructions to utilize the relationships, dependencies, and contextual information embedded within the sub-graph. The prompt directs the LLM to focus on producing code aligned with the user’s query and grounded with relevance to the existing code base.
+By grounding the LLM’s code generation in a semantically enriched sub-graph, this methodology enables the model to generate code that not only fulfils the functional requirements of the query but is also fully aligned with the repository’s framework. This knowledge graph-driven approach allows the LLM to produce contextually aware, structurally consistent code, aligned with the coding conventions and dependencies of the base repository. This holistic integration significantly reduces the need for post-generation adjustments, providing a streamlined pipeline for generating high-quality repository-specific code. Together, these stages establish a robust system for context-aware code generation, making the process more precise, efficient, and applicable to real-world development scenarios.</p>
+</div>
+<figure id="S3.T1" class="ltx_table">
+<figcaption class="ltx_caption"><span class="ltx_tag ltx_tag_table">TABLE I: </span>Comparative Analysis of pass@1 Scores Achieved by Various Code Generation Methodologies on the EvoCodeBench Dataset</figcaption>
+<div class="ltx_inline-block ltx_transformed_outer" style="width:433.6pt;height:303pt;vertical-align:-148.9pt;"><span class="ltx_transformed_inner" style="transform:translate(36.5pt,-13.0pt) scale(1.20215172811965,1.20215172811965) ;">
+<table class="ltx_tabular ltx_align_middle">
+<tbody class="ltx_tbody">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_l ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">Category</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">Method</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">LLM Model</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">pass@1 Score</span></td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_l ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="3">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">Proposed</span></td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">Approach</span></td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="3">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Graph-based</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Retrieval</td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-4</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">32.00%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-4o</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">33.45%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Claude 3.5</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Sonnet</td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">36.36%</span></td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_l ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="6">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">Baseline</span></td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;"><span class="ltx_text ltx_font_bold">(EvoCodeBench)</span></td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="2">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Local File</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">(Infilling)</td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-4</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">20.73%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-3.5</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">17.82%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="2">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Local File</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">(Completion)</td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-4</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">17.45%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-3.5</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">15.64%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="2">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Without</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Context</td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-4</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">7.27%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-3.5</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">6.55%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_b ltx_border_l ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="3"><span class="ltx_text ltx_font_bold">CodeXGraph</span></td>
+<td class="ltx_td ltx_align_center ltx_border_b ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;" rowspan="3">
+<table class="ltx_tabular ltx_align_middle">
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">Graph-based</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_nopad_r ltx_align_center" style="padding-top:1.5pt;padding-bottom:1.5pt;">(212/275 Samples)</td>
+</tr>
+</table>
+</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">Qwen2</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">19.34%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">DS-Coder</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">25.47%</td>
+</tr>
+<tr class="ltx_tr">
+<td class="ltx_td ltx_align_center ltx_border_b ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">GPT-4o</td>
+<td class="ltx_td ltx_align_center ltx_border_b ltx_border_r ltx_border_t" style="padding-top:1.5pt;padding-bottom:1.5pt;">36.02%</td>
+</tr>
+</tbody>
+</table>
+</span></div>
+</figure>
+</section>
+</section>
+<section id="S4" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">IV </span><span class="ltx_text ltx_font_smallcaps">Dataset and Evaluation</span>
+</h2>
+
+<section id="S4.SS1" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">IV-A </span><span class="ltx_text ltx_font_bold">Dataset: EvoCodeBench</span>
+</h3>
+
+<div id="S4.SS1.p1" class="ltx_para">
+<p class="ltx_p">To evaluate our knowledge graph-based code generation methodology, we utilized the EvoCodeBench dataset, a benchmark specifically designed to assess repository-level code generation capabilities. EvoCodeBench consists of 275 samples derived from 25 open-source repositories, selected to provide a diverse set of real-world code generation tasks. We only evaluate our approach for code written in Python programming language. Each sample corresponds to a function or method, intending to generate its code body, based on contextual information from the repository. This includes details like the namespace, location within the repository, expected functionality, and required arguments. The dataset is designed to assess models on realistic coding tasks, such as handling dependencies, integrating with existing codebases, and meeting specified functional requirements.</p>
+</div>
+</section>
+<section id="S4.SS2" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">IV-B </span><span class="ltx_text ltx_font_bold">Evaluation Methodology</span>
+</h3>
+
+<div id="S4.SS2.p1" class="ltx_para">
+<p class="ltx_p">To evaluate the EvoCodeBench dataset, we slightly modify our pipeline to focus on generating the body of a function or method given the specified namespace, location, and functionality.</p>
+</div>
+<div id="S4.SS2.p2" class="ltx_para">
+<p class="ltx_p">Based on the given information, for each sample, we locate the function or method in the repository and replace the original body of the function with just a simple pass keyword. Following the methodology outlined in Section 3, we construct a knowledge graph of the repository, capturing essential elements and relationships. Once we have created the graph we retrieve a two-hop sub-graph starting from the target node that we want to generate the body for. We eliminate some steps from the original pipeline as we are not dealing with an actual natural language query. We already know our target and hence we only perform the graph-based retrieval for evaluation. This expansion captures the function’s immediate context and dependencies that might impact its functionality or integration with other components. The resulting sub-graph, containing nodes and edges represents these dependencies and relationships, which is then passed to the LLM as contextual input for code generation. The generated function or method body is subsequently inserted into the original file, as the body of the target function.</p>
+</div>
+<div id="S4.SS2.p3" class="ltx_para">
+<p class="ltx_p">To evaluate the accuracy and functionality of the generated code, we utilize the pass@k metric, a standard metric in code generation benchmarks where <math id="S4.SS2.p3.m1" class="ltx_Math" alttext="k" display="inline"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> represents the number of responses sampled from the LLM. For each sample, the EvoCodeBench dataset includes a set of predefined test cases designed to validate the generated code’s functionality. We execute these test cases on the generated code and calculate the pass rate, quantitatively measuring how well the model meets the functional requirements. The system’s final performance is reported as the percentage of test cases passed across all samples, reflecting the model’s effectiveness in generating functionally correct and contextually appropriate code. We discuss the results of this experiment in the following results section.</p>
+</div>
+</section>
+</section>
+<section id="S5" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">V </span><span class="ltx_text ltx_font_smallcaps">Results</span>
+</h2>
+
+<div id="S5.p1" class="ltx_para">
+<p class="ltx_p">We evaluated our knowledge graph based repository-level code generation approach on the EvoCodeBench dataset, using the pass@1 metric to measure code correctness on the first attempt. Table <a href="#S3.T1" title="TABLE I ‣ III-C Code Generation with LLM ‣ III Methodology ‣ Knowledge Graph Based Repository-Level Code Generation" class="ltx_ref"><span class="ltx_text ltx_ref_tag">I</span></a> presents a comparison of our approach with established baselines from the original EvoCodeBench paper and the CodeXGraph model. The code correctness is measured by executing the provided test cases for each sample in the EvoCodeBench dataset.</p>
+</div>
+<div id="S5.p2" class="ltx_para">
+<p class="ltx_p">Our approach achieved the highest pass@1 score of 36.36% with Claude 3.5 Sonnet, modestly exceeding CodeXGraph’s top score of 36.02% on GPT-4o. It is worth noting that CodeXGraph was evaluated on 212 out of 275 samples due to environment setup problems with some of the repositories as mentioned by the authors in the paper. We evaluate the approach on all 275 samples, we try to fix the issues faced while setting up the environment for the repositories to make the evaluation possible on all the instances available. This comprehensive evaluation allowed for a thorough assessment of how well our knowledge graph based retrieval integrates structural and contextual insights into code generation. OpenAI’s GPT models, tested with our approach, yielded pass@1 scores of 32.00% for GPT-4 and 33.45% for GPT-4o, which provided a significant improvement over the original EvoCodeBench baselines. These baseline methods, which included Local File Infilling, Completion and without Context, achieved pass@1 scores ranging from 7.27% to 20.73% for GPT-4, underscoring the challenges of context-agnostic code generation.</p>
+</div>
+</section>
+<section id="S6" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">VI </span><span class="ltx_text ltx_font_smallcaps">Conclusion and Future Work</span>
+</h2>
+
+<div id="S6.p1" class="ltx_para">
+<p class="ltx_p">In this work, we presented a knowledge graph based methodology for repository-level code generation, designed to enhance the contextual accuracy, dependency alignment, and stylistic consistency of generated code. Our approach leverages the structured relationships within a code repository to create a knowledge graph that captures inter-dependencies, code hierarchy, and project-specific patterns, which are then used to ground and contextualize code generation by large language models (LLMs). Evaluations on the EvoCodeBench dataset demonstrate that our method outperforms state-of-the-art baselines, achieving a pass@1 score of 36.36% with Claude-3.5 Sonnet. This improvement underscores the value of incorporating repository context and structured semantic relationships into the code generation process, addressing key limitations associated with traditional LLM-driven code generation such as syntactic errors, incomplete code and missing dependencies. We showcase that leveraging a knowledge graph which provides the context of usage and dependencies related to the user’s query and target functions helps the LLM to generate more correct and complete code.</p>
+</div>
+<div id="S6.p2" class="ltx_para">
+<p class="ltx_p">Our method also demonstrates that leveraging a hybrid retrieval system helps retrieve highly relevant code snippets from the knowledge base compared to other retrieval methods discussed in the paper. The code context retrieved by this hybrid system when provided as a sub-graph to the LLM boosts the code generation ability of the LLM and helps it ground better on the retrieved data.</p>
+</div>
+<div id="S6.p3" class="ltx_para">
+<p class="ltx_p">Despite its success, our approach also encountered challenges and highlights several avenues for future research. The process of sub-graph retrieval and filtering is computationally intensive, especially for large repositories, and finding the optimal balance between context richness and retrieval latency remains an ongoing research. Future work could focus on enhancing the schema design to include a broader array of code elements, such as decorators, variable types, and auxiliary files, which could increase the relevance of retrieved context for more complex queries. Extending the system to support multiple programming languages would further improve its adaptability and make it applicable to a wider range of software projects.</p>
+</div>
+<div id="S6.p4" class="ltx_para">
+<p class="ltx_p">Additionally, integrating agent-based iterative workflows represents a promising direction for optimizing code generation accuracy and efficiency. By automating query formulation and dynamically adjusting retrieval depth based on query complexity, LLM agents could refine and execute code generation autonomously with minimal human intervention, reducing both time and computational cost. Task-specific fine-tuning of LLMs to interpret and generate code grounded in graph structures may also improve the model’s ability to leverage repository context effectively.</p>
+</div>
+<div id="S6.p5" class="ltx_para">
+<p class="ltx_p">Finally, the knowledge graph structure introduced in this paper could be extended to other downstream tasks in software engineering, including code debugging, documentation generation, and code translation. By adapting the knowledge graph to support these applications, future work could explore how this approach may serve as a generalized framework for context-aware AI-driven programming tools. Overall, our findings indicate that knowledge graph based code generation offers a robust solution to repository-specific code generation challenges, paving the way for further research and development in AI-enabled software development space.</p>
+</div>
+</section>
+<section id="bib" class="ltx_bibliography">
+<h2 class="ltx_title ltx_title_bibliography">References</h2>
+
+<ul class="ltx_biblist">
+<li id="bib.bib1" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[1]</span>
+<span class="ltx_bibblock">
+OpenAI, J. Achiam, S. Adler, S. Agarwal, L. Ahmad, I. Akkaya, F. L. Aleman, D. Almeida, J. Altenschmidt, S. Altman, S. Anadkat, R. Avila, I. Babuschkin, S. Balaji, V. Balcom, P. Baltescu, H. Bao, M. Bavarian, J. Belgum, I. Bello, J. Berdine, G. Bernadett-Shapiro, C. Berner, L. Bogdonoff, O. Boiko, M. Boyd, A.-L. Brakman, G. Brockman, T. Brooks, M. Brundage, K. Button, T. Cai, R. Campbell, A. Cann, B. Carey, C. Carlson, R. Carmichael, B. Chan, C. Chang, F. Chantzis, D. Chen, S. Chen, R. Chen, J. Chen, M. Chen, B. Chess, C. Cho, C. Chu, H. W. Chung, D. Cummings, J. Currier, Y. Dai, C. Decareaux, T. Degry, N. Deutsch, D. Deville, A. Dhar, D. Dohan, S. Dowling, S. Dunning, A. Ecoffet, A. Eleti, T. Eloundou, D. Farhi, L. Fedus, N. Felix, S. P. Fishman, J. Forte, I. Fulford, L. Gao, E. Georges, C. Gibson, V. Goel, T. Gogineni, G. Goh, R. Gontijo-Lopes, J. Gordon, M. Grafstein, S. Gray, R. Greene, J. Gross, S. S. Gu, Y. Guo, C. Hallacy, J. Han, J. Harris, Y. He, M. Heaton, J. Heidecke, C. Hesse, A. Hickey,
+W. Hickey, P. Hoeschele, B. Houghton, K. Hsu, S. Hu, X. Hu, J. Huizinga, S. Jain, S. Jain, J. Jang, A. Jiang, R. Jiang, H. Jin, D. Jin, S. Jomoto, B. Jonn, H. Jun, T. Kaftan, Łukasz Kaiser, A. Kamali, I. Kanitscheider, N. S. Keskar, T. Khan, L. Kilpatrick, J. W. Kim, C. Kim, Y. Kim, J. H. Kirchner, J. Kiros, M. Knight, D. Kokotajlo, Łukasz Kondraciuk, A. Kondrich, A. Konstantinidis, K. Kosic, G. Krueger, V. Kuo, M. Lampe, I. Lan, T. Lee, J. Leike, J. Leung, D. Levy, C. M. Li, R. Lim, M. Lin, S. Lin, M. Litwin, T. Lopez, R. Lowe, P. Lue, A. Makanju, K. Malfacini, S. Manning, T. Markov, Y. Markovski, B. Martin, K. Mayer, A. Mayne, B. McGrew, S. M. McKinney, C. McLeavey, P. McMillan, J. McNeil, D. Medina, A. Mehta, J. Menick, L. Metz, A. Mishchenko, P. Mishkin, V. Monaco, E. Morikawa, D. Mossing, T. Mu, M. Murati, O. Murk, D. Mély, A. Nair, R. Nakano, R. Nayak, A. Neelakantan, R. Ngo, H. Noh, L. Ouyang, C. O’Keefe, J. Pachocki, A. Paino, J. Palermo, A. Pantuliano, G. Parascandolo, J. Parish, E. Parparita,
+A. Passos, M. Pavlov, A. Peng, A. Perelman, F. de Avila Belbute Peres, M. Petrov, H. P. de Oliveira Pinto, Michael, Pokorny, M. Pokrass, V. H. Pong, T. Powell, A. Power, B. Power, E. Proehl, R. Puri, A. Radford, J. Rae, A. Ramesh, C. Raymond, F. Real, K. Rimbach, C. Ross, B. Rotsted, H. Roussez, N. Ryder, M. Saltarelli, T. Sanders, S. Santurkar, G. Sastry, H. Schmidt, D. Schnurr, J. Schulman, D. Selsam, K. Sheppard, T. Sherbakov, J. Shieh, S. Shoker, P. Shyam, S. Sidor, E. Sigler, M. Simens, J. Sitkin, K. Slama, I. Sohl, B. Sokolowsky, Y. Song, N. Staudacher, F. P. Such, N. Summers, I. Sutskever, J. Tang, N. Tezak, M. B. Thompson, P. Tillet, A. Tootoonchian, E. Tseng, P. Tuggle, N. Turley, J. Tworek, J. F. C. Uribe, A. Vallone, A. Vijayvergiya, C. Voss, C. Wainwright, J. J. Wang, A. Wang, B. Wang, J. Ward, J. Wei, C. Weinmann, A. Welihinda, P. Welinder, J. Weng, L. Weng, M. Wiethoff, D. Willner, C. Winter, S. Wolrich, H. Wong, L. Workman, S. Wu, J. Wu, M. Wu, K. Xiao, T. Xu, S. Yoo, K. Yu, Q. Yuan,
+W. Zaremba, R. Zellers, C. Zhang, M. Zhang, S. Zhao, T. Zheng, J. Zhuang, W. Zhuk, and B. Zoph, “Gpt-4 technical report,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2303.08774" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2303.08774</a>
+
+</span>
+</li>
+<li id="bib.bib2" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[2]</span>
+<span class="ltx_bibblock">
+M. Chen, J. Tworek, H. Jun, Q. Yuan, H. P. de Oliveira Pinto, J. Kaplan, H. Edwards, Y. Burda, N. Joseph, G. Brockman, A. Ray, R. Puri, G. Krueger, M. Petrov, H. Khlaaf, G. Sastry, P. Mishkin, B. Chan, S. Gray, N. Ryder, M. Pavlov, A. Power, L. Kaiser, M. Bavarian, C. Winter, P. Tillet, F. P. Such, D. Cummings, M. Plappert, F. Chantzis, E. Barnes, A. Herbert-Voss, W. H. Guss, A. Nichol, A. Paino, N. Tezak, J. Tang, I. Babuschkin, S. Balaji, S. Jain, W. Saunders, C. Hesse, A. N. Carr, J. Leike, J. Achiam, V. Misra, E. Morikawa, A. Radford, M. Knight, M. Brundage, M. Murati, K. Mayer, P. Welinder, B. McGrew, D. Amodei, S. McCandlish, I. Sutskever, and W. Zaremba, “Evaluating large language models trained on code,” 2021. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2107.03374" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2107.03374</a>
+
+</span>
+</li>
+<li id="bib.bib3" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[3]</span>
+<span class="ltx_bibblock">
+I. Ozkaya, “Application of large language models to software engineering tasks: Opportunities, risks, and implications,” <em class="ltx_emph ltx_font_italic">IEEE Software</em>, vol. 40, no. 3, pp. 4–8, 2023.
+
+</span>
+</li>
+<li id="bib.bib4" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[4]</span>
+<span class="ltx_bibblock">
+S. Dou, H. Jia, S. Wu, H. Zheng, W. Zhou, M. Wu, M. Chai, J. Fan, C. Huang, Y. Tao, Y. Liu, E. Zhou, M. Zhang, Y. Zhou, Y. Wu, R. Zheng, M. Wen, R. Weng, J. Wang, X. Cai, T. Gui, X. Qiu, Q. Zhang, and X. Huang, “What’s wrong with your code generated by large language models? an extensive study,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2407.06153" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2407.06153</a>
+
+</span>
+</li>
+<li id="bib.bib5" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[5]</span>
+<span class="ltx_bibblock">
+X. Hou, Y. Zhao, Y. Liu, Z. Yang, K. Wang, L. Li, X. Luo, D. Lo, J. Grundy, and H. Wang, “Large language models for software engineering: A systematic literature review,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2308.10620" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2308.10620</a>
+
+</span>
+</li>
+<li id="bib.bib6" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[6]</span>
+<span class="ltx_bibblock">
+Y. Wang, T. Jiang, M. Liu, J. Chen, and Z. Zheng, “Beyond functional correctness: Investigating coding style inconsistencies in large language models,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2407.00456" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2407.00456</a>
+
+</span>
+</li>
+<li id="bib.bib7" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[7]</span>
+<span class="ltx_bibblock">
+L. Di Grazia and M. Pradel, “Code search: A survey of techniques for finding code,” <em class="ltx_emph ltx_font_italic">ACM Computing Surveys</em>, vol. 55, no. 11, p. 1–31, Feb. 2023. [Online]. Available: <a target="_blank" href="http://dx.doi.org/10.1145/3565971" title="" class="ltx_ref ltx_url ltx_font_typewriter">http://dx.doi.org/10.1145/3565971</a>
+
+</span>
+</li>
+<li id="bib.bib8" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[8]</span>
+<span class="ltx_bibblock">
+H. Tan, Q. Luo, L. Jiang, Z. Zhan, J. Li, H. Zhang, and Y. Zhang, “Prompt-based code completion via multi-retrieval augmented generation,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2405.07530" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2405.07530</a>
+
+</span>
+</li>
+<li id="bib.bib9" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[9]</span>
+<span class="ltx_bibblock">
+P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N. Goyal, H. Küttler, M. Lewis, W.-t. Yih, T. Rocktäschel, S. Riedel, and D. Kiela, “Retrieval-augmented generation for knowledge-intensive nlp tasks,” in <em class="ltx_emph ltx_font_italic">Advances in Neural Information Processing Systems</em>, H. Larochelle, M. Ranzato, R. Hadsell, M. Balcan, and H. Lin, Eds., vol. 33. Curran Associates, Inc., 2020, pp. 9459–9474. [Online]. Available: <a target="_blank" href="https://proceedings.neurips.cc/paper_files/paper/2020/file/6b493230205f780e1bc26945df7481e5-Paper.pdf" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://proceedings.neurips.cc/paper_files/paper/2020/file/6b493230205f780e1bc26945df7481e5-Paper.pdf</a>
+
+</span>
+</li>
+<li id="bib.bib10" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[10]</span>
+<span class="ltx_bibblock">
+X. Li, “A review of prominent paradigms for llm-based agents: Tool use (including rag), planning, and feedback learning,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2406.05804" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2406.05804</a>
+
+</span>
+</li>
+<li id="bib.bib11" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[11]</span>
+<span class="ltx_bibblock">
+M. H. Nguyen, T. P. Chau, P. X. Nguyen, and N. D. Q. Bui, “Agilecoder: Dynamic collaborative agents for software development based on agile methodology,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2406.11912" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2406.11912</a>
+
+</span>
+</li>
+<li id="bib.bib12" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[12]</span>
+<span class="ltx_bibblock">
+J. Li, G. Li, X. Zhang, Y. Dong, and Z. Jin, “Evocodebench: An evolving code generation benchmark aligned with real-world code repositories,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2404.00599" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2404.00599</a>
+
+</span>
+</li>
+<li id="bib.bib13" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[13]</span>
+<span class="ltx_bibblock">
+J. Wei, M. Bosma, V. Zhao, K. Guu, A. W. Yu, B. Lester, N. Du, A. M. Dai, and Q. V. Le, “Finetuned language models are zero-shot learners,” in <em class="ltx_emph ltx_font_italic">International Conference on Learning Representations</em>, 2022. [Online]. Available: <a target="_blank" href="https://openreview.net/forum?id=gEZrGCozdqR" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://openreview.net/forum?id=gEZrGCozdqR</a>
+
+</span>
+</li>
+<li id="bib.bib14" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[14]</span>
+<span class="ltx_bibblock">
+H. W. Chung, L. Hou, S. Longpre, B. Zoph, Y. Tay, W. Fedus, Y. Li, X. Wang, M. Dehghani, S. Brahma, A. Webson, S. S. Gu, Z. Dai, M. Suzgun, X. Chen, A. Chowdhery, A. Castro-Ros, M. Pellat, K. Robinson, D. Valter, S. Narang, G. Mishra, A. Yu, V. Zhao, Y. Huang, A. Dai, H. Yu, S. Petrov, E. H. Chi, J. Dean, J. Devlin, A. Roberts, D. Zhou, Q. V. Le, and J. Wei, “Scaling instruction-finetuned language models,” 2022. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2210.11416" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2210.11416</a>
+
+</span>
+</li>
+<li id="bib.bib15" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[15]</span>
+<span class="ltx_bibblock">
+J. Jiang, F. Wang, J. Shen, S. Kim, and S. Kim, “A survey on large language models for code generation,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2406.00515" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2406.00515</a>
+
+</span>
+</li>
+<li id="bib.bib16" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[16]</span>
+<span class="ltx_bibblock">
+Z. Pan, X. Hu, X. Xia, and X. Yang, “Enhancing repository-level code generation with integrated contextual information,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2406.03283" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2406.03283</a>
+
+</span>
+</li>
+<li id="bib.bib17" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[17]</span>
+<span class="ltx_bibblock">
+F. Zhang, B. Chen, Y. Zhang, J. Keung, J. Liu, D. Zan, Y. Mao, J.-G. Lou, and W. Chen, “Repocoder: Repository-level code completion through iterative retrieval and generation,” 2023. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2303.12570" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2303.12570</a>
+
+</span>
+</li>
+<li id="bib.bib18" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[18]</span>
+<span class="ltx_bibblock">
+D. Shrivastava, D. Kocetkov, H. de Vries, D. Bahdanau, and T. Scholak, “Repofusion: Training code models to understand your repository,” 2023. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2306.10998" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2306.10998</a>
+
+</span>
+</li>
+<li id="bib.bib19" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[19]</span>
+<span class="ltx_bibblock">
+G. Izacard and E. Grave, “Leveraging passage retrieval with generative models for open domain question answering,” in <em class="ltx_emph ltx_font_italic">Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume</em>, P. Merlo, J. Tiedemann, and R. Tsarfaty, Eds. Online: Association for Computational Linguistics, Apr. 2021, pp. 874–880. [Online]. Available: <a target="_blank" href="https://aclanthology.org/2021.eacl-main.74" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://aclanthology.org/2021.eacl-main.74</a>
+
+</span>
+</li>
+<li id="bib.bib20" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[20]</span>
+<span class="ltx_bibblock">
+K. S. Jones, S. Walker, and S. E. Robertson, “A probabilistic model of information retrieval: development and comparative experiments - part 1,” <em class="ltx_emph ltx_font_italic">Inf. Process. Manag.</em>, vol. 36, pp. 779–808, 2000. [Online]. Available: <a target="_blank" href="https://api.semanticscholar.org/CorpusID:1965284" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://api.semanticscholar.org/CorpusID:1965284</a>
+
+</span>
+</li>
+<li id="bib.bib21" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[21]</span>
+<span class="ltx_bibblock">
+Z. Z. Wang, A. Asai, X. V. Yu, F. F. Xu, Y. Xie, G. Neubig, and D. Fried, “Coderag-bench: Can retrieval augment code generation?” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2406.14497" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2406.14497</a>
+
+</span>
+</li>
+<li id="bib.bib22" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[22]</span>
+<span class="ltx_bibblock">
+Z. Xi, W. Chen, X. Guo, W. He, Y. Ding, B. Hong, M. Zhang, J. Wang, S. Jin, E. Zhou, R. Zheng, X. Fan, X. Wang, L. Xiong, Y. Zhou, W. Wang, C. Jiang, Y. Zou, X. Liu, Z. Yin, S. Dou, R. Weng, W. Cheng, Q. Zhang, W. Qin, Y. Zheng, X. Qiu, X. Huang, and T. Gui, “The rise and potential of large language model based agents: A survey,” 2023. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2309.07864" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2309.07864</a>
+
+</span>
+</li>
+<li id="bib.bib23" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[23]</span>
+<span class="ltx_bibblock">
+T. Guo, X. Chen, Y. Wang, R. Chang, S. Pei, N. V. Chawla, O. Wiest, and X. Zhang, “Large language model based multi-agents: A survey of progress and challenges,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2402.01680" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2402.01680</a>
+
+</span>
+</li>
+<li id="bib.bib24" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[24]</span>
+<span class="ltx_bibblock">
+D. Huang, J. M. Zhang, M. Luck, Q. Bu, Y. Qing, and H. Cui, “Agentcoder: Multi-agent-based code generation with iterative testing and optimisation,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2312.13010" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2312.13010</a>
+
+</span>
+</li>
+<li id="bib.bib25" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[25]</span>
+<span class="ltx_bibblock">
+W. Liu, A. Yu, D. Zan, B. Shen, W. Zhang, H. Zhao, Z. Jin, and Q. Wang, “Graphcoder: Enhancing repository-level code completion via code context graph-based retrieval and language model,” <em class="ltx_emph ltx_font_italic">ArXiv</em>, vol. abs/2406.07003, 2024. [Online]. Available: <a target="_blank" href="https://api.semanticscholar.org/CorpusID:270379479" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://api.semanticscholar.org/CorpusID:270379479</a>
+
+</span>
+</li>
+<li id="bib.bib26" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[26]</span>
+<span class="ltx_bibblock">
+X. Liu, B. Lan, Z. Hu, Y. Liu, Z. Zhang, F. Wang, M. Shieh, and W. Zhou, “Codexgraph: Bridging large language models and code repositories via code graph databases,” 2024. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2408.03910" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2408.03910</a>
+
+</span>
+</li>
+<li id="bib.bib27" class="ltx_bibitem">
+<span class="ltx_tag ltx_tag_bibitem">[27]</span>
+<span class="ltx_bibblock">
+W. Wang, F. Wei, L. Dong, H. Bao, N. Yang, and M. Zhou, “Minilm: Deep self-attention distillation for task-agnostic compression of pre-trained transformers,” 2020. [Online]. Available: <a target="_blank" href="https://arxiv.org/abs/2002.10957" title="" class="ltx_ref ltx_url ltx_font_typewriter">https://arxiv.org/abs/2002.10957</a>
+
+</span>
+</li>
+</ul>
+</section>
+<div class="ltx_pagination ltx_role_newpage"></div>
+</article>
+</div>
+<div class="ar5iv-footer"><a href="/html/2505.14393" class="ar5iv-nav-button ar5iv-nav-button-prev">◄</a>
+    <a class="ar5iv-home-button" href="/"><img height="40" alt="ar5iv homepage" src="/assets/ar5iv.png"></a>
+    <a href="/feeling_lucky" class="ar5iv-text-button">Feeling<br>lucky?</a>
+    <a href="/land_of_honey_and_milk" rel="nofollow" aria-hidden="true" tabindex="-1"></a>
+    <a href="/log/2505.14394" class="ar5iv-text-button ar5iv-severity-ok">Conversion<br>report</a>
+    <a class="ar5iv-text-button" target="_blank" href="https://github.com/dginev/ar5iv/issues/new?template=improve-article--arxiv-id-.md&title=Improve+article+2505.14394">Report<br>an issue</a>
+    <a href="https://arxiv.org/abs/2505.14394" class="ar5iv-text-button arxiv-ui-theme">View&nbsp;original<br>on&nbsp;arXiv</a><a href="/html/2505.14395" class="ar5iv-nav-button ar5iv-nav-button-next">►</a>
+</div><footer class="ltx_page_footer">
+<a class="ar5iv-toggle-color-scheme" href="javascript:toggleColorScheme()" title="Toggle ar5iv color scheme"><span class="color-scheme-icon"></span></a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/license" target="_blank">Copyright</a>
+<a class="ar5iv-footer-button" href="https://arxiv.org/help/policies/privacy_policy" target="_blank">Privacy Policy</a>
+
+<div class="ltx_page_logo">Generated  on Thu Jun  5 15:35:54 2025 by <a target="_blank" href="http://dlmf.nist.gov/LaTeXML/" class="ltx_LaTeXML_logo"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span class="ltx_font_smallcaps" style="position:relative; bottom:2.2pt;">a</span>T<span class="ltx_font_smallcaps" style="font-size:120%;position:relative; bottom:-0.2ex;">e</span></span><span style="font-size:90%; position:relative; bottom:-0.2ex;">XML</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="Mascot Sammy"></a>
+</div></footer>
+</div>
+
+    <script>
+      var canMathML = typeof(MathMLElement) == "function";
+      if (!canMathML) {
+        var body = document.querySelector("body");
+        body.firstElementChild.setAttribute('style', 'opacity: 0;');
+        var loading = document.createElement("div");
+        loading.setAttribute("id", "mathjax-loading-spinner");
+        var message = document.createElement("div");
+        message.setAttribute("id", "mathjax-loading-message");
+        message.innerText = "Typesetting Equations...";
+        body.prepend(loading);
+        body.prepend(message);
+
+        var el = document.createElement("script");
+        el.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        document.querySelector("head").appendChild(el);
+
+        window.MathJax = {
+          startup: {
+            pageReady: () => {
+              return MathJax.startup.defaultPageReady().then(() => {
+                body.removeChild(loading);
+                body.removeChild(message);
+                body.firstElementChild.removeAttribute('style');
+              }); } } };
+      }
+    </script>
+    <script>
+    // Auxiliary function, building the preview feature when
+    // an inline citation is clicked
+    function clicked_cite(e) {
+      e.preventDefault();
+      let cite = this.closest('.ltx_cite');
+      let next = cite.nextSibling;
+      if (next && next.nodeType == Node.ELEMENT_NODE && next.getAttribute('class') == "ar5iv-bibitem-preview") {
+        next.remove();
+        return; }
+      // Before adding a preview modal,
+      // cleanup older previews, in case they're still open
+      document.querySelectorAll('span.ar5iv-bibitem-preview').forEach(function(node) {
+        node.remove();
+      })
+
+      // Create the preview
+      preview = document.createElement('span');
+      preview.setAttribute('class','ar5iv-bibitem-preview');
+      let target = document.getElementById(this.getAttribute('href').slice(1));
+      target.childNodes.forEach(function (child) {
+        preview.append(child.cloneNode(true));
+      });
+      let close_x = document.createElement('button');
+      close_x.setAttribute("aria-label","Close modal for bibliography item preview");
+      close_x.textContent = "×";
+      close_x.setAttribute('class', 'ar5iv-button-close-preview');
+      close_x.setAttribute('onclick','this.parentNode.remove()');
+      preview.append(close_x);
+      preview.querySelectorAll('.ltx_tag_bibitem').forEach(function(node) {
+        node.remove();
+      });
+      cite.parentNode.insertBefore(preview, cite.nextSibling);
+      return;
+    }
+    // Global Document initialization:
+    // - assign the preview feature to all inline citation links
+    document.querySelectorAll(".ltx_cite .ltx_ref").forEach(function (link) {
+      link.addEventListener("click", clicked_cite);
+    });
+    </script>
+    </body>
+</html>
