@@ -1,6 +1,7 @@
 {
   "name": "learning",
   "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/install.sh",
   "terminals": [
     {
       "name": "frontend",
