@@ -1,0 +1,15 @@
+{
+  "name": "learning",
+  "install": "bash .cursor/install.sh",
+  "terminals": [
+    {
+      "name": "frontend",
+      "command": "cd frontend/react-based/concept-app && BROWSER=none PORT=3000 npm start"
+    },
+    {
+      "name": "rest-api",
+      "command": "source learningenv/bin/activate && cd concepts/system-design/REST/ResponseCodeExamples && uvicorn main:app --host 127.0.0.1 --port 8000"
+    }
+  ],
+  "ports": [3000, 8000]
+}
